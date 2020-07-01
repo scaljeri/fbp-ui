@@ -1,0 +1,11 @@
+:host {
+	display: inline-block;
+	border: 2px solid #000;
+
+  position: absolute;
+  background-color: #fff;
+
+	&.is-document {
+		position: relative;
+	}
+}
