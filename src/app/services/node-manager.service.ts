@@ -20,6 +20,7 @@ export class NodeManagerService {
 
   public nodeList: INodeServiceItem[] = [];
   public nodeMap: Record<string, INodeServiceItem> = {};
+  public test = 1;
 
   getNode(nodeId: string): INodeServiceItem {
     return this.nodeMap[nodeId];

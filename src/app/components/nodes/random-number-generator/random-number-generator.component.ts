@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   templateUrl: './random-number-generator.component.html',
-  styleUrls: ['./random-number-generator.component.scss']
+  styleUrls: ['./random-number-generator.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RandomNumberGeneratorComponent implements OnInit {
 

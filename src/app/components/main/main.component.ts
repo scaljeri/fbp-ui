@@ -8,13 +8,13 @@ import { Dispatch } from '@ngxs-labs/dispatch-decorator';
 import { New } from 'src/app/store/actions/state';
 import { Store } from '@ngxs/store';
 import { FBP_NODE_EVENTS } from 'src/app/events';
-import { NodeManagerService, INodeServiceItem } from 'src/app/services/node-manager.service';
+import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { fbpDispatchEvent } from 'src/app/utils/event';
-import { NodeComponent } from '../node/node.component';
 import { IFbpState, createUID } from '@scaljeri/fbp-core';
+import { NodeComponent } from '../node/node.component';
 
 @Component({
-  templateUrl: '../node/node.component.html',
+  templateUrl: './main.component.html',
   styleUrls: ['main.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -38,12 +38,11 @@ export class MainComponent extends NodeComponent implements OnInit, OnChanges, A
     protected element: ElementRef,
     protected store: Store,
     protected nodeService: NodeManagerService) {
-    super(element, store, nodeService);
-
-    this.isActive = true;
+      super(element, store, nodeService);
 
     const setState = this.setState.bind(this);
     (element.nativeElement as any).setState = (state: IFbpState) => {
+      console.log('BEGIN: ', state);
       setState(state);
     };
   }
@@ -51,6 +50,7 @@ export class MainComponent extends NodeComponent implements OnInit, OnChanges, A
   ngOnInit(): void {
     // TODO: Test this with an angular application
     // At this time al nodes are present waiting for their configuration to be
+    this.nodeService.test = 9;
     console.log(createUID());
     setTimeout(() => {
       setTimeout(() => {

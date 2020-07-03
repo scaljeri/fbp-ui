@@ -1,7 +1,9 @@
 <fbp-node-header></fbp-node-header>
 
-<fbp-connections [parentId]="id"></fbp-connections>
+<fbp-connections *ngIf="connections" [parentId]="id"></fbp-connections>
 
+<fbp-sockets class="left-sockets"></fbp-sockets>
 <slot></slot>
+<fbp-sockets class="right-sockets"></fbp-sockets>
 
 <fbp-footer></fbp-footer>

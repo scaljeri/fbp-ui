@@ -1,12 +1,8 @@
 import { Component, ElementRef, OnInit, AfterViewInit, OnChanges, Input, ViewEncapsulation, ChangeDetectionStrategy, SimpleChange, SimpleChanges, ChangeDetectorRef, ContentChild, HostBinding, OnDestroy, Attribute, HostListener } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
-import { IFbpNode, IFbpState } from '@scaljeri/fbp-core';
+import { IFbpNode, prefillWithDefaults } from '@scaljeri/fbp-core';
 import { Observable } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
 import { FbpState } from 'src/app/store/state';
-import { fbpDispatchEvent } from 'src/app/utils/event';
-import { FBP_NODE_EVENTS } from 'src/app/events';
-import { MainComponent } from '../main/main.component';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import * as dragUtils from '../../utils/drag-drop';
 import { NodeCoordinates } from 'src/app/store/actions/node';
@@ -17,22 +13,28 @@ import { NodeCoordinates } from 'src/app/store/actions/node';
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeComponent implements OnInit, AfterViewInit, OnDestroy {
+export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  @Input() id: string;
+
   protected dragNode: dragUtils.IDrag;
   protected isActive = false;
 
   public node$: Observable<IFbpNode>;
   public node: IFbpNode;
-  public id: string;
+  // public id: string;
+
+  public connections; // ???????
+
 
   @HostBinding('style.top')
   get top(): string {
-    return this.node.ui.position.top + '%';
+    console.log('has node ', this.node);
+    return this.node && this.node.ui.position.top + '%';
   }
 
   @HostBinding('style.left')
   get left(): string {
-    return this.node.ui.position.left + '%';
+    return this.node && this.node.ui.position.left + '%';
   }
 
   // state$;
@@ -50,13 +52,15 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.state$ = this.store.select(FbpState);
   }
 
+  ngOnChanges(o): void {
+    if (this.id) {
+      this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
+        this.node = prefillWithDefaults(node);
+      });
+    }
+  }
   ngOnInit(): void {
     this.id = this.element.nativeElement.getAttribute('id');
-
-    this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
-      console.log('update ' + this.id);
-      this.node = node;
-    });
 
     // this.store.select(FbpState.getNode(this.id)).subscribe((node: IFbpNode) => {
     // this.store.select(FbpState.pandas(this.id)).subscribe((node: IFbpNode) => {
@@ -100,6 +104,12 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const child = this.element.nativeElement.children[0];
+
+    // setTimeout(() => {
+    //   this.id = this.element.nativeElement.getAttribute('id');
+
+    //   debugger;
+    // }, 1000);
     // console.log('Node::::', this.element.nativeElement.children, this.element.nativeElement.children.item(0), child);
     // child.setSocket('yes from parent');
     // setTimeout(() => {
