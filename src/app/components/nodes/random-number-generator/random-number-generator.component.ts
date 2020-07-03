@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, NgZone, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   templateUrl: './random-number-generator.component.html',
@@ -9,12 +9,15 @@ export class RandomNumberGeneratorComponent implements OnInit {
 
   public value: number;
 
-  constructor() { }
+  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    setInterval(() => {
-     this.value = Math.random();
-    }, 1000);
+    this.ngZone.runOutsideAngular(() => {
+      setInterval(() => {
+        this.value = Math.random();
+        this.cdr.detectChanges();
+      }, 1000);
+    });
   }
 
 }
