@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnInit, AfterViewInit, OnChanges, Input, ViewEncapsulation, ChangeDetectionStrategy, SimpleChange, SimpleChanges, ChangeDetectorRef, ContentChild, HostBinding, OnDestroy, Attribute, HostListener } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
-import { IFbpNode, prefillWithDefaults } from '@scaljeri/fbp-core';
-import { Observable } from 'rxjs';
-import { FbpState } from 'src/app/store/state';
+import { IFbpNode } from '@scaljeri/fbp-core';
+import { FbpState } from 'src/app/store/state'
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import * as dragUtils from '../../utils/drag-drop';
 import { NodeCoordinates } from 'src/app/store/actions/node';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: './node.component.html',
@@ -25,10 +25,15 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
   public connections; // ???????
 
+  @HostBinding('class.is-fbp-flow')
+  get isFlow(): boolean {
+    return this.node && !this.node.type;
+  }
+
 
   @HostBinding('style.top')
   get top(): string {
-    console.log('has node ', this.node);
+    console.log('change detection ', this.node);
     return this.node && this.node.ui.position.top + '%';
   }
 
@@ -55,7 +60,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
   ngOnChanges(o): void {
     if (this.id) {
       this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
-        this.node = prefillWithDefaults(node);
+        // this.node = prefillWithDefaults(node);
       });
     }
   }
@@ -129,43 +134,5 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
     // const event = fbpDispatchEvent(FBP_NODE_EVENTS.REMOVE, null, { detail: this.id });
     // this.element.nativeElement.parentNode.dispatchEvent(event);
     // this.nodeService.removeNode(this.id);
-  }
-
-  @HostListener('pointerdown', ['$event'])
-  onDragStart(event: PointerEvent): void {
-    if (this.isActive) {
-      this.dragNode = dragUtils.startDragNode(event, this.element.nativeElement);
-      // this.draggableNode = (event.target as HTMLElement).closest('fbp-node');
-      // determine pointer offset with respect to the node
-      // this.draggable = this.nodeService.lookupByHTMLElement(target.closest<HTMLElement>('fbp-node'));
-      event.stopPropagation();
-    }
-  }
-
-  @HostListener('pointermove', ['$event'])
-  onDragMove(event: PointerEvent): void {
-    if (this.dragNode) {
-      this.dragNode.move(event);
-    }
-  }
-
-  @HostListener('pointerup', ['$event'])
-  @HostListener('pointercancel', ['$event'])
-  // @HostListener('pointerout', ['$event'])
-  @HostListener('pointerleave', ['$event'])
-  onDragEnd(event: PointerEvent): void {
-    if (this.dragNode) {
-      const result = this.dragNode.end(event);
-
-      if (!result.isClick) {
-        // persist change in coordinates
-        this.store.dispatch(new NodeCoordinates({
-          id: result.target.getAttribute('id'),
-          position: { left: result.left, top: result.top }
-        }));
-      }
-
-      this.dragNode = null;
-    }
   }
 }

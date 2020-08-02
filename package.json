@@ -1,6 +1,7 @@
 {
   "name": "@scaljeri/fbp-ui",
-  "version": "1.0.0",
+  "version": "1.0.11",
+  "main": "dist/types/index.js",
   "types": "dist/types/index.d.ts",
   "license": "MIT",
   "scripts": {
@@ -12,8 +13,7 @@
     "test": "jest",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ngcc",
-    "publish": "npm publish --access public",
+    "publishx": "npm publish --access public",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

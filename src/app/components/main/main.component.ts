@@ -2,7 +2,7 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  ChangeDetectionStrategy, Input, OnChanges, HostListener, ElementRef, AfterViewInit, SimpleChanges, SimpleChange
+  ChangeDetectionStrategy, Input, OnChanges, HostListener, ElementRef, AfterViewInit, SimpleChanges, SimpleChange, ChangeDetectorRef, NgZone
 } from '@angular/core';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
 import { New } from 'src/app/store/actions/state';
@@ -12,6 +12,8 @@ import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { fbpDispatchEvent } from 'src/app/utils/event';
 import { IFbpState, createUID } from '@scaljeri/fbp-core';
 import { NodeComponent } from '../node/node.component';
+import * as dragUtils from '../../utils/drag-drop';
+import { NodeCoordinates } from 'src/app/store/actions/node';
 
 @Component({
   templateUrl: './main.component.html',
@@ -19,7 +21,7 @@ import { NodeComponent } from '../node/node.component';
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MainComponent extends NodeComponent implements OnInit, OnChanges, AfterViewInit {
+export class MainComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() state: IFbpState;
   @Input() setState(state: IFbpState): void {
     this.state = state;
@@ -32,13 +34,16 @@ export class MainComponent extends NodeComponent implements OnInit, OnChanges, A
 
   // @Select(FfpState) animals$: Observable<IFbpState>;
 
+  private dragNode;
+
   @Dispatch() newState = (state: IFbpState) => new New(state);
 
   constructor(
-    protected element: ElementRef,
-    protected store: Store,
-    protected nodeService: NodeManagerService) {
-      super(element, store, nodeService);
+    private ngZone: NgZone,
+    private element: ElementRef,
+    private store: Store,
+    private nodeService: NodeManagerService) {
+    // super(element, store, nodeService);
 
     const setState = this.setState.bind(this);
     (element.nativeElement as any).setState = (state: IFbpState) => {
@@ -63,6 +68,8 @@ export class MainComponent extends NodeComponent implements OnInit, OnChanges, A
         });
       });
 
+      // flowManager.initialize(this.element.nativeElement, this.store);
+
       // console.log(createUID());
 
       // setTimeout(() => {
@@ -72,6 +79,14 @@ export class MainComponent extends NodeComponent implements OnInit, OnChanges, A
 
       // 	this.newState(Object.assign({}, this.state, { nodes: [newNode, this.state.nodes[1]] }));
       // }, 5000);
+
+      this.ngZone.runOutsideAngular(() => {
+        this.element.nativeElement.addEventListener('pointermove', (event) => {
+          if (this.dragNode) {
+            this.dragNode.move(event);
+          }
+        });
+      });
     });
   }
 
@@ -116,5 +131,41 @@ export class MainComponent extends NodeComponent implements OnInit, OnChanges, A
   onNodeRemove(event): void {
     // TODO: Cleanup connections
     console.log('Node removed with id=' + event.detail);
+  }
+
+  @HostListener('pointerdown', ['$event'])
+  onDragStart(event: PointerEvent): void {
+    this.dragNode = dragUtils.startDragNode(event, this.element.nativeElement);
+    // this.draggableNode = (event.target as HTMLElement).closest('fbp-node');
+    // determine pointer offset with respect to the node
+    // this.draggable = this.nodeService.lookupByHTMLElement(target.closest<HTMLElement>('fbp-node'));
+    event.stopPropagation();
+  }
+
+  // @HostListener('pointermove', ['$event'])
+  // onDragMove(event: PointerEvent): void {
+  //   // if (this.dragNode) {
+  //   //   this.dragNode.move(event);
+  //   // }
+  // }
+
+  @HostListener('pointerup', ['$event'])
+  @HostListener('pointercancel', ['$event'])
+  // @HostListener('pointerout', ['$event'])
+  @HostListener('pointerleave', ['$event'])
+  onDragEnd(event: PointerEvent): void {
+    if (this.dragNode) {
+      const result = this.dragNode.end(event);
+
+      if (!result.isClick) {
+        // persist change in coordinates
+        this.store.dispatch(new NodeCoordinates({
+          id: result.target.getAttribute('id'),
+          position: { left: result.left, top: result.top }
+        }));
+      }
+
+      this.dragNode = null;
+    }
   }
 }

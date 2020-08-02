@@ -21,7 +21,7 @@ import { LoggerComponent } from './components/nodes/logger/logger.component';
     ConnectionComponent,
     NodeHeaderComponent,
     RandomNumberGeneratorComponent,
-    LoggerComponent
+    LoggerComponent,
   ],
   imports: [
     BrowserModule,

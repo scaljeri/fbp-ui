@@ -25,6 +25,11 @@
       border: 1px solid #000;
       height: 100%;
     }
+
+    #flow-a {
+      width: 100px;
+      height: 100px;
+    }
   </style>
 </head>
 
@@ -37,6 +42,8 @@
     <fbp-node id="logr">
       <fbp-logger></fbp-logger>
     </fbp-node>
+
+    <fbp-node id="flow-a"></fbp-node>
   </fbp-main>
 
   <script>
@@ -47,7 +54,7 @@
           name: 'demo flow',
           nodes: {
             rng: {
-              // id: 'rng',
+              id: 'rng',
               type: 'random-number-generator',
               // type: 'code',
               view: {
@@ -65,7 +72,7 @@
               ]
             },
             logr: {
-              // id: 'logr',
+              id: 'logr',
               type: 'logger',
               view: { position: {
                 left: 30,
@@ -73,8 +80,8 @@
               }},
               sockets: [{ id: 'wfgfdfg', type: 'IN' }]
             },
-            'logr-a': {
-              // id: 'logr-a'
+            'flow-a': {
+              id: 'flow-a'
             }
           },
           connections: [
