@@ -33,7 +33,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
   @HostBinding('style.top')
   get top(): string {
-    console.log('change detection ', this.node);
+    // console.log('change detection ', this.node);
     return this.node && this.node.ui.position.top + '%';
   }
 
@@ -48,7 +48,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
   constructor(
     protected element: ElementRef,
     protected store: Store,
-    // protected cdr: ChangeDetectorRef,
+    protected cdr: ChangeDetectorRef,
     protected nodeService: NodeManagerService) {
     // this.node$ = this.store
     // 	.select(FfpState).pipe(
@@ -60,13 +60,27 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
   ngOnChanges(o): void {
     if (this.id) {
       this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
+        if (node) {
+          this.node = node;
+          console.log(this.node.sockets);
+          setTimeout(() => {
+            this.cdr.detectChanges();
+          }, 100);
+        }
         // this.node = prefillWithDefaults(node);
       });
     }
   }
+
+  cls = '';
+
   ngOnInit(): void {
     this.id = this.element.nativeElement.getAttribute('id');
 
+    setTimeout(() => {
+      this.cls = 'normal';
+      this.cdr.detectChanges();
+    }, 3000);
     // this.store.select(FbpState.getNode(this.id)).subscribe((node: IFbpNode) => {
     // this.store.select(FbpState.pandas(this.id)).subscribe((node: IFbpNode) => {
     //   console.log('-----NODE UPDATE', this.id, node);

@@ -54,7 +54,7 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit(): void {
     // TODO: Test this with an angular application
-    // At this time al nodes are present waiting for their configuration to be
+    // At this time al nodes are now waiting for their configuration to be
     this.nodeService.test = 9;
     console.log(createUID());
     setTimeout(() => {

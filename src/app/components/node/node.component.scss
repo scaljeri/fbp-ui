@@ -1,11 +1,100 @@
 :host {
-	display: inline-block;
-	border: 2px solid #000;
+  --sock-w: 0;
+  // --fbp-gear-color: var(--fbp-gear-color, #fff);
+  --fbp-gear-color: #fff;
+
+  display: block;
 
   position: absolute;
-  background-color: #fff;
 
-	&.is-document {
-		position: relative;
-	}
+  min-width: var(--fbp-min-node-width, var(--fbp-default-node-size, 100px));
+  min-height: var(--fbp-min-node-height, var(--fbp-default-node-size, 100px));
+
+  // &.is-document {
+  //   position: relative;
+  // }
+
+  & > section {
+    // background-color: grey;
+    border: 2px solid grey;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: var(--sock-w) minmax(100px, auto) var(--sock-w);
+    grid-template-rows: var(--sock-w) minmax(100px, auto) var(--sock-w);
+    transition: all 0.5s;
+    box-shadow: inset 0 0 10px #ffffff;
+
+
+    min-width: var(--fbp-min-node-width, var(--fbp-default-node-size, 100px));
+    min-height: var(--fbp-min-node-height, var(--fbp-default-node-size, 100px));
+
+    // &.normal {
+    // grid-template-columns: 0 minmax(100px, auto) 0;
+    // grid-template-rows: 0 minmax(100px, auto) 0;
+    // }
+  }
+}
+
+fbp-sockets {
+  position: relative;
+  z-index: 1;
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  &[position='top'] {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  &[position='right'] {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  &[position='bottom'] {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+
+  &[position='left'] {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+}
+
+.content {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 0;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-top: 8px;
+  font-family: var(--font-family-node-header);
+
+
+  header {
+    position: absolute;
+    white-space: nowrap;
+    color: #fff;
+  }
 }

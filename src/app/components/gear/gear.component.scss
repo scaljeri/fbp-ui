@@ -1,0 +1,52 @@
+:host {
+  display: flex;
+  // width: var(--fbp-min-node-width, 100px);
+  // height: var(--fbp-min-node-height, 100px);
+  --grear-bg: var(--fbp-node-gear-bg, rgba(0,0,0,0.4));
+
+  background-color: var(--grear-bg);
+  align-items: center;
+  justify-content: center;
+}
+
+.gear-wrapper {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.gear {
+  animation: spin 4s linear infinite;
+  position: absolute;
+
+  path {
+    fill: var(--fbp-gear-color);
+  }
+}
+
+.gear1 {
+  width: 80px;
+  left: -10px;
+  top: 0;
+}
+
+.gear2 {
+  width: 40px;
+  animation-direction: reverse;
+  // animation-direction: alternate;
+  left: 48px;
+  top: 20px;
+
+}
+
+.gear3 {
+  width: 60px;
+  top: 40px;
+  left: 45px;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

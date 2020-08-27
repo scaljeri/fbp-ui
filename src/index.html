@@ -9,6 +9,12 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <style>
+    :root {
+      --fbp-min-node-width: 120px;
+      --fbp-min-node-height: 120px;
+      --fbp-gear-color: #ffffff;
+    }
+
     html,
     body {
       height: 100%;
@@ -24,6 +30,7 @@
     fbp-main {
       border: 1px solid #000;
       height: 100%;
+      background-color: #000;
     }
 
     #flow-a {
@@ -36,14 +43,15 @@
 <body>
   <fbp-main>
     <fbp-node id="rng">
-      <fbp-random-number-generator></fbp-random-number-generator>
+      <!-- <fbp-random-number-generator></fbp-random-number-generator> -->
+      <fbp-gear></fbp-gear>
     </fbp-node>
 
-    <fbp-node id="logr">
+    <!-- <fbp-node id="logr">
       <fbp-logger></fbp-logger>
     </fbp-node>
 
-    <fbp-node id="flow-a"></fbp-node>
+    <fbp-node id="flow-a"></fbp-node> -->
   </fbp-main>
 
   <script>
@@ -56,11 +64,12 @@
             rng: {
               id: 'rng',
               type: 'random-number-generator',
+              title: 'Awesome Random number generator',
               // type: 'code',
-              view: {
+              ui: {
                 position: {
-                  top: 30,
-                  left: 30
+                  top: 10,
+                  left: 70
                 }
               },
               sockets: [
@@ -71,24 +80,28 @@
                 }
               ]
             },
-            logr: {
-              id: 'logr',
-              type: 'logger',
-              view: { position: {
-                left: 30,
-                top: 30
-              }},
-              sockets: [{ id: 'wfgfdfg', type: 'IN' }]
-            },
-            'flow-a': {
-              id: 'flow-a'
-            }
+            // logr: {
+            //   id: 'logr',
+            //   type: 'logger',
+            //   ui: { position: {
+            //     left: 30,
+            //     top: 30
+            //   }},
+            //   sockets: [{ id: 'wfgfdfg', type: 'IN' }]
+            // },
+            // 'flow-a': {
+            //   id: 'flow-a',
+            //   ui: { position: {
+            //     left: 10,
+            //     top: 10
+            //   }}
+            // }
           },
           connections: [
-            {
-              from: 'wfr2efwdv',
-              to: 'wfgfdfg'
-            }
+            // {
+            //   from: 'wfr2efwdv',
+            //   to: 'wfgfdfg'
+            // }
           ]
         });
     });

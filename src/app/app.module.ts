@@ -13,6 +13,8 @@ import { NodeHeaderComponent } from './components/node-header/node-header.compon
 import { NodeComponent } from './components/node/node.component';
 import { RandomNumberGeneratorComponent } from './components/nodes/random-number-generator/random-number-generator.component';
 import { LoggerComponent } from './components/nodes/logger/logger.component';
+import { SocketsComponent } from './components/sockets/sockets.component';
+import { GearComponent } from './components/gear/gear.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { LoggerComponent } from './components/nodes/logger/logger.component';
     NodeHeaderComponent,
     RandomNumberGeneratorComponent,
     LoggerComponent,
+    SocketsComponent,
+    GearComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +47,8 @@ export class AppModule {
   ngDoBootstrap() {
     this.createCustomElement(MainComponent, 'main');
     this.createCustomElement(NodeComponent, 'node');
+    this.createCustomElement(SocketsComponent, 'sockets');
+    this.createCustomElement(GearComponent, 'gear');
     this.createCustomElement(RandomNumberGeneratorComponent, 'random-number-generator');
     this.createCustomElement(LoggerComponent, 'logger');
   }

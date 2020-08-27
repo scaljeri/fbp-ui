@@ -1,4 +1,5 @@
 :host {
+  --font-family-node-header: var(--fbp-font-family-node-header, courier,arial,helvetica);
   display: flex;
   position: relative;
 }

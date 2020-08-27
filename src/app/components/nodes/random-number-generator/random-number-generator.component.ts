@@ -12,12 +12,12 @@ export class RandomNumberGeneratorComponent implements OnInit {
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.ngZone.runOutsideAngular(() => {
-      setInterval(() => {
-        this.value = Math.random();
-        this.cdr.detectChanges();
-      }, 1000);
-    });
+    // this.ngZone.runOutsideAngular(() => {
+    //   setInterval(() => {
+    //     this.value = Math.random();
+    //     this.cdr.detectChanges();
+    //   }, 1000);
+    // });
   }
 
 }
