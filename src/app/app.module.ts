@@ -15,6 +15,7 @@ import { RandomNumberGeneratorComponent } from './components/nodes/random-number
 import { LoggerComponent } from './components/nodes/logger/logger.component';
 import { SocketsComponent } from './components/sockets/sockets.component';
 import { GearComponent } from './components/gear/gear.component';
+import { SocketComponent } from './components/socket/socket.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { GearComponent } from './components/gear/gear.component';
     LoggerComponent,
     SocketsComponent,
     GearComponent,
+    SocketComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +50,7 @@ export class AppModule {
     this.createCustomElement(MainComponent, 'main');
     this.createCustomElement(NodeComponent, 'node');
     this.createCustomElement(SocketsComponent, 'sockets');
+    this.createCustomElement(SocketComponent, 'socket');
     this.createCustomElement(GearComponent, 'gear');
     this.createCustomElement(RandomNumberGeneratorComponent, 'random-number-generator');
     this.createCustomElement(LoggerComponent, 'logger');

@@ -1,6 +1,7 @@
 
 <ng-container *ngIf="node">
   <!-- <fbp-connections *ngIf="connections" [parentId]="id"></fbp-connections> -->
+  <fbp-socket style="display:none"></fbp-socket>
 
   <section [ngClass]="cls">
     <fbp-sockets [sockets]="node.sockets" position="top" class="left-sockets"></fbp-sockets>

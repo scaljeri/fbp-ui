@@ -11,8 +11,7 @@ import { FBP_NODE_EVENTS } from 'src/app/events';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { fbpDispatchEvent } from 'src/app/utils/event';
 import { IFbpState, createUID } from '@scaljeri/fbp-core';
-import { NodeComponent } from '../node/node.component';
-import * as dragUtils from '../../utils/drag-drop';
+import { monitorElement, IFbpPointerDownResponse } from '../../utils/drag-drop';
 import { NodeCoordinates } from 'src/app/store/actions/node';
 
 @Component({
@@ -33,8 +32,6 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
   // private draggableNode: HTMLElement;
 
   // @Select(FfpState) animals$: Observable<IFbpState>;
-
-  private dragNode;
 
   @Dispatch() newState = (state: IFbpState) => new New(state);
 
@@ -81,11 +78,16 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
       // }, 5000);
 
       this.ngZone.runOutsideAngular(() => {
-        this.element.nativeElement.addEventListener('pointermove', (event) => {
-          if (this.dragNode) {
-            this.dragNode.move(event);
+        const { unsubscribe } = monitorElement(this.element.nativeElement, {
+          pointerDown: (event: PointerEvent): IFbpPointerDownResponse => {
+            return { target: (event.target as HTMLElement).closest('fbp-node')};
           }
         });
+        // this.element.nativeElement.addEventListener('pointermove', (event) => {
+        //   if (this.dragNode) {
+        //     this.dragNode.move(event);
+        //   }
+        // });
       });
     });
   }
@@ -133,14 +135,14 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
     console.log('Node removed with id=' + event.detail);
   }
 
-  @HostListener('pointerdown', ['$event'])
-  onDragStart(event: PointerEvent): void {
-    this.dragNode = dragUtils.startDragNode(event, this.element.nativeElement);
-    // this.draggableNode = (event.target as HTMLElement).closest('fbp-node');
-    // determine pointer offset with respect to the node
-    // this.draggable = this.nodeService.lookupByHTMLElement(target.closest<HTMLElement>('fbp-node'));
-    event.stopPropagation();
-  }
+  // @HostListener('pointerdown', ['$event'])
+  // onDragStart(event: PointerEvent): void {
+  //   this.dragNode = dragUtils.startDragNode(event, this.element.nativeElement);
+  //   // this.draggableNode = (event.target as HTMLElement).closest('fbp-node');
+  //   // determine pointer offset with respect to the node
+  //   // this.draggable = this.nodeService.lookupByHTMLElement(target.closest<HTMLElement>('fbp-node'));
+  //   event.stopPropagation();
+  // }
 
   // @HostListener('pointermove', ['$event'])
   // onDragMove(event: PointerEvent): void {
@@ -149,23 +151,23 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
   //   // }
   // }
 
-  @HostListener('pointerup', ['$event'])
-  @HostListener('pointercancel', ['$event'])
-  // @HostListener('pointerout', ['$event'])
-  @HostListener('pointerleave', ['$event'])
-  onDragEnd(event: PointerEvent): void {
-    if (this.dragNode) {
-      const result = this.dragNode.end(event);
+  // @HostListener('pointerup', ['$event'])
+  // @HostListener('pointercancel', ['$event'])
+  // // @HostListener('pointerout', ['$event'])
+  // @HostListener('pointerleave', ['$event'])
+  // onDragEnd(event: PointerEvent): void {
+  //   if (this.dragNode) {
+  //     const result = this.dragNode.end(event);
 
-      if (!result.isClick) {
-        // persist change in coordinates
-        this.store.dispatch(new NodeCoordinates({
-          id: result.target.getAttribute('id'),
-          position: { left: result.left, top: result.top }
-        }));
-      }
+  //     if (!result.isClick) {
+  //       // persist change in coordinates
+  //       this.store.dispatch(new NodeCoordinates({
+  //         id: result.target.getAttribute('id'),
+  //         position: { left: result.left, top: result.top }
+  //       }));
+  //     }
 
-      this.dragNode = null;
-    }
-  }
+  //     this.dragNode = null;
+  //   }
+  // }
 }

@@ -1,10 +1,21 @@
-import { Component, ElementRef, OnInit, AfterViewInit, OnChanges, Input, ViewEncapsulation, ChangeDetectionStrategy, SimpleChange, SimpleChanges, ChangeDetectorRef, ContentChild, HostBinding, OnDestroy, Attribute, HostListener } from '@angular/core';
-import { Store, Select } from '@ngxs/store';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  AfterViewInit,
+  OnChanges,
+  Input,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  HostBinding,
+  OnDestroy
+} from '@angular/core';
+import { Store } from '@ngxs/store';
 import { IFbpNode } from '@scaljeri/fbp-core';
-import { FbpState } from 'src/app/store/state'
+import { FbpState } from 'src/app/store/state';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import * as dragUtils from '../../utils/drag-drop';
-import { NodeCoordinates } from 'src/app/store/actions/node';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -122,7 +133,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
   // }
 
   ngAfterViewInit(): void {
-    const child = this.element.nativeElement.children[0];
 
     // setTimeout(() => {
     //   this.id = this.element.nativeElement.getAttribute('id');

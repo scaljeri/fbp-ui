@@ -1,0 +1,68 @@
+@import 'mixins';
+
+$border: #868686;
+$border-width: 2px;
+$bg: #fff;
+$size-small: 14px;
+$size-large: 24px;
+
+:host {
+  --border-top: var(
+    --fbp-socket-border-top,
+    var(--fbp-socket-border, #{$border})
+  );
+  --border-right: var(
+    --fbp-socket-border-top,
+    var(--fbp-socket-border, #{$border})
+  );
+  --border-bottom: var(
+    --fbp-socket-border-top,
+    var(--fbp-socket-border, #{$border})
+  );
+  --border-left: var(
+    --fbp-socket-border-top,
+    var(--fbp-socket-border, #{$border})
+  );
+
+  display: block;
+  border-width: var(--fbp-socket-border-width, #{$border-width});
+  border-style: solid;
+  border-color: var(--border-top) var(--border-right) var(--border-bottom)
+    var(--border-left);
+
+  width: var(--socket-size, 14px);
+  height: var(--socket-size, 14px);
+  border-radius: 50%;
+  background-clip: content-box;
+  background-color: var(--fbp-socket-bg, #{$bg});
+  transform: rotate(45deg);
+  @include fbp-size(var(--fbp-socket-size-small, #{$size-small}));
+
+  &:hover {
+    transform: rotate(45deg) scale(1.2);
+  }
+}
+
+:host(.large) {
+  @include fbp-size(var(--fbp-socket-size-large, #{$size-large}))
+}
+
+:host(.left) {
+  --border-left: transparent;
+  --border-bottom: transparent;
+}
+
+:host(.right) {
+  --border-right: transparent;
+  --border-top: transparent;
+}
+
+:host(.top) {
+  --border-left: transparent;
+  --border-top: transparent;
+}
+
+:host(.bottom) {
+  --border-right: transparent;
+  --border-bottom: transparent;
+}

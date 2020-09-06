@@ -1,5 +1,5 @@
 :host {
-  --sock-w: 0;
+  --sock-w: 0px;
   // --fbp-gear-color: var(--fbp-gear-color, #fff);
   --fbp-gear-color: #fff;
 
@@ -19,8 +19,10 @@
     border: 2px solid grey;
     border-radius: 5px;
     display: grid;
-    grid-template-columns: var(--sock-w) minmax(100px, auto) var(--sock-w);
-    grid-template-rows: var(--sock-w) minmax(100px, auto) var(--sock-w);
+    // grid-template-columns: var(--sock-w) minmax(100px, auto) var(--sock-w);
+    // grid-template-rows: var(--sock-w) minmax(100px, auto) var(--sock-w);
+    grid-template-columns: var(--sock-w) 1fr var(--sock-w);
+    grid-template-rows: var(--sock-w) 1fr var(--sock-w);
     transition: all 0.5s;
     box-shadow: inset 0 0 10px #ffffff;
 
@@ -41,12 +43,16 @@ fbp-sockets {
   border: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  align-items: center;
 
   &[position='top'] {
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start: 1;
     grid-row-end: 2;
+    // background-color: green;
+    margin-top: -2px;
   }
 
   &[position='right'] {
@@ -54,6 +60,8 @@ fbp-sockets {
     grid-column-end: 4;
     grid-row-start: 2;
     grid-row-end: 3;
+    // background-color: purple;
+    margin-right: -2px;
   }
 
   &[position='bottom'] {
@@ -61,6 +69,8 @@ fbp-sockets {
     grid-column-end: 3;
     grid-row-start: 3;
     grid-row-end: 4;
+    // background-color: yellow;
+    margin-bottom: -2px;
   }
 
   &[position='left'] {
@@ -68,6 +78,8 @@ fbp-sockets {
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 3;
+    // background-color: blue;
+    margin-left: -2px;
   }
 }
 
