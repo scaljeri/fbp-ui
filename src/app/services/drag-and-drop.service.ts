@@ -28,7 +28,7 @@ export class DragAndDropService {
   setDragArea(element: HTMLElement, eventsHandler: PointerEventsHandler ): void {
     this.nodes.push({ element: this.activeElement, handler: this.activeHandler });
     this.activeElement.removeEventListener('pointerdown', this.pointerDownFn);
-    this.activeElement.removeEventListener('pointermove', this.pointerDownFn);
+    this.activeElement.removeEventListener('pointermove', this.pointerMoveFn);
     this.activeElement.removeEventListener('pointerup', this.pointerUpFn);
 
     this.activeElement = element;

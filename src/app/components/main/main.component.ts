@@ -11,8 +11,8 @@ import { FBP_NODE_EVENTS } from 'src/app/events';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { fbpDispatchEvent } from 'src/app/utils/event';
 import { IFbpState, createUID } from '@scaljeri/fbp-core';
-import { monitorElement, IFbpPointerDownResponse } from '../../utils/drag-drop';
-import { NodeCoordinates } from 'src/app/store/actions/node';
+import { monitorElement } from '../../utils/drag-drop';
+import { IFbpPointerDownResponse } from 'src/app/utils/dnd/types';
 
 @Component({
   templateUrl: './main.component.html',
@@ -80,7 +80,7 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
       this.ngZone.runOutsideAngular(() => {
         const { unsubscribe } = monitorElement(this.element.nativeElement, {
           pointerDown: (event: PointerEvent): IFbpPointerDownResponse => {
-            return { target: (event.target as HTMLElement).closest('fbp-node')};
+            return { target: (event.target as HTMLElement).closest('fbp-node') as HTMLElement};
           }
         });
         // this.element.nativeElement.addEventListener('pointermove', (event) => {

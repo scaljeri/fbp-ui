@@ -9,7 +9,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   HostBinding,
-  OnDestroy
+  OnDestroy,
+  Attribute
 } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { IFbpNode } from '@scaljeri/fbp-core';
@@ -27,11 +28,12 @@ import { Observable } from 'rxjs';
 export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() id: string;
 
-  protected dragNode: dragUtils.IDrag;
+//   protected dragNode: dragUtils.IDrag;
   protected isActive = false;
 
   public node$: Observable<IFbpNode>;
   public node: IFbpNode;
+  public type: 'root' | null;
   // public id: string;
 
   public connections; // ???????
@@ -57,6 +59,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
   // @Select(FbpState) state$: Observable<FbpState>;
 
   constructor(
+	  // @Attribute('type') public type: string,
     protected element: ElementRef,
     protected store: Store,
     protected cdr: ChangeDetectorRef,
@@ -65,7 +68,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
     // 	.select(FfpState).pipe(
     // 		tap(d => console.log('tap', d)),
     // 		filter((node: IFbpNode) => node && node.id === this.idx));
-    // this.state$ = this.store.select(FbpState);
+	// this.state$ = this.store.select(FbpState);
+	this.type = element.nativeElement.getAttribute('type');
   }
 
   ngOnChanges(o): void {
@@ -90,7 +94,9 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
     setTimeout(() => {
       this.cls = 'normal';
-      this.cdr.detectChanges();
+	console.log('root: ' + this.type);
+	  this.cdr.detectChanges();
+
     }, 3000);
     // this.store.select(FbpState.getNode(this.id)).subscribe((node: IFbpNode) => {
     // this.store.select(FbpState.pandas(this.id)).subscribe((node: IFbpNode) => {
