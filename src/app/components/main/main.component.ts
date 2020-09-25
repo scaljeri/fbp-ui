@@ -135,6 +135,8 @@ export class MainComponent implements OnInit, OnChanges, AfterViewInit {
     console.log('Node removed with id=' + event.detail);
   }
 
+
+
   // @HostListener('pointerdown', ['$event'])
   // onDragStart(event: PointerEvent): void {
   //   this.dragNode = dragUtils.startDragNode(event, this.element.nativeElement);
