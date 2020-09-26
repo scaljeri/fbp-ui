@@ -16,11 +16,11 @@ import { Store } from '@ngxs/store';
 import { IFbpNode, IFbpState } from '@scaljeri/fbp-core';
 import { FbpState } from 'src/app/store/state';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
-import * as dragUtils from '../../utils/drag-drop';
 import { Observable } from 'rxjs';
 import { fbpDispatchEvent } from 'src/app/utils/event';
 import { New } from 'src/app/store/actions/state';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
+import { InteractionService } from 'src/app/services/interaction.service';
 
 @Component({
 	templateUrl: './node.component.html',
@@ -75,6 +75,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 		protected element: ElementRef,
 		protected store: Store,
 		protected cdr: ChangeDetectorRef,
+		private interactionService: InteractionService,
 		protected nodeService: NodeManagerService) {
 		// this.node$ = this.store
 		// 	.select(FfpState).pipe(
@@ -193,8 +194,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
 	setState(state: IFbpState): void {
 		// this.state = state;
+
 		this.newState(state);
 		this.isRootNode = true;
+		this.interactionService.on(this.element.nativeElement);
 		// this.nodes = this.element.nativeElement.shadowRoot.querySelector('slot').assignedElements();
 
 		// This is the main node -> fullscreen always??

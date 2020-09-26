@@ -1,7 +1,7 @@
 import { IFbpPosition } from '@scaljeri/fbp-core';
-import { dndMoveElement } from './move-element';
-import { IDragAndDropState, IFbpPointerHandlers } from './types';
-import { dndUpdateCoordinates } from './update-coordinates';
+import { dndMoveElement } from './__move-element';
+import { IDragAndDropState, IFbpPointerHandlers } from '../event-types';
+import { dndUpdateCoordinates } from './__update-coordinates';
 
 const dndPointerUp = (handlers: IFbpPointerHandlers, states: IDragAndDropState[]): (e: PointerEvent) => void => {
 	return (event: PointerEvent): void => {

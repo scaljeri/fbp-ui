@@ -1,15 +1,15 @@
-import { IFbpPointerHandlers, IDragAndDropState } from './types';
+import { IFbpPointerHandlers, IDragAndDropState } from '../event-types';
 
 const dndPointerDown = (element: HTMLElement, handlers: IFbpPointerHandlers, state: IDragAndDropState[]): (e: PointerEvent) => void => {
 	return (event: PointerEvent): void => {
 
-		const { target, ghost } = handlers.pointerDown(event);
+		const { target, targets, ghost } = handlers.pointerDown(event);
 		const dragRect = element.getBoundingClientRect();
 
 		state.length = 0;
 		state[0] = {} as IDragAndDropState;
 
-		if (Array.isArray(target)) {
+		if (targets) {
 			target.forEach((target, index) => {
 				state[index] = {} as IDragAndDropState;
 				initializeState(target, state[index], event, dragRect);

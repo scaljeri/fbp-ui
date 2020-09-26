@@ -1,6 +1,6 @@
-import { dndMoveElement } from './move-element';
-import { IFbpPointerHandlers, IDragAndDropState } from './types';
-import { dndUpdateCoordinates } from './update-coordinates';
+import { dndMoveElement } from './__move-element';
+import { IFbpPointerHandlers, IDragAndDropState } from '../event-types';
+import { dndUpdateCoordinates } from './__update-coordinates';
 
 const dndPointerMove = (handlers: IFbpPointerHandlers, states: IDragAndDropState[]): (e: PointerEvent) => void => {
 	return (event: PointerEvent): void => {

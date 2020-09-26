@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
 import { IFbpSocket } from '@scaljeri/fbp-core';
-import { DragAndDropService } from 'src/app/services/drag-and-drop.service';
+import { InteractionService } from 'src/app/services/interaction.service';
 
 @Component({
   templateUrl: './sockets.component.html',
@@ -14,7 +14,7 @@ export class SocketsComponent implements OnInit, OnChanges {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private dnd: DragAndDropService) { }
+    private interactionService: InteractionService) { }
 
   ngOnInit(): void {
   }
@@ -24,9 +24,10 @@ export class SocketsComponent implements OnInit, OnChanges {
     this.cdr.detectChanges();
   }
 
-  @HostListener('pointerdown', ['event'])
+  @HostListener('pointerdown', ['$event'])
   onPointerDown(event): void {
-    event.stopPropagation();
+	// event.stopPropagation();
+	console.log('Sockets: ....');
 
     // register, bla bla
   }

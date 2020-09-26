@@ -1,6 +1,6 @@
-import { IDragAndDropState } from './types';
+import { IFbpEventState } from '../event-types';
 
-const dndMoveElement = (state: IDragAndDropState): void => {
+const dndMoveElement = (state: IFbpEventState): void => {
 	state.target.style.left = `${state.x}px`;
 	state.target.style.top = `${state.y}px`;
 }

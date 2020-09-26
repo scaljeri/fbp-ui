@@ -5,7 +5,7 @@ import { NgxsDispatchPluginModule } from "@ngxs-labs/dispatch-decorator";
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { environment } from 'src/environments/environment';
 
-import { MainComponent } from './components/main/main.component';
+// import { MainComponent } from './components/main/main.component';
 import { ConnectionComponent } from './components/connection/connection.component';
 import { NgxsModule } from '@ngxs/store';
 import { FbpState } from './store/state';
@@ -19,7 +19,7 @@ import { SocketComponent } from './components/socket/socket.component';
 
 @NgModule({
   declarations: [
-    MainComponent,
+    // MainComonent,
     NodeComponent,
     ConnectionComponent,
     NodeHeaderComponent,
@@ -47,7 +47,7 @@ export class AppModule {
   constructor(private injector: Injector) {}
 
   ngDoBootstrap() {
-    this.createCustomElement(MainComponent, 'main');
+    // this.createCustomElement(MainComponent, 'main');
     this.createCustomElement(NodeComponent, 'node');
     this.createCustomElement(SocketsComponent, 'sockets');
     this.createCustomElement(SocketComponent, 'socket');

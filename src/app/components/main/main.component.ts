@@ -11,7 +11,7 @@ import { FBP_NODE_EVENTS } from 'src/app/events';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { fbpDispatchEvent } from 'src/app/utils/event';
 import { IFbpState, createUID } from '@scaljeri/fbp-core';
-import { monitorElement } from '../../utils/drag-drop';
+import { monitorElement } from '../../utils/__drag-drop';
 import { IFbpPointerDownResponse } from 'src/app/utils/dnd/types';
 
 @Component({

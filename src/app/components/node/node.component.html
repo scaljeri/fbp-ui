@@ -3,10 +3,10 @@
 	<fbp-socket style="display:none"></fbp-socket>
 
 	<section [ngClass]="cls">
-		<fbp-sockets [sockets]="node.sockets" position="top" class="left-sockets"></fbp-sockets>
-		<fbp-sockets [sockets]="node.sockets" position="right" class="left-sockets"></fbp-sockets>
-		<fbp-sockets [sockets]="node.sockets" position="bottom" class="left-sockets"></fbp-sockets>
-		<fbp-sockets [sockets]="node.sockets" position="left" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [sockets]="node?.sockets" position="top" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [sockets]="node?.sockets" position="right" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [sockets]="node?.sockets" position="bottom" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [sockets]="node?.sockets" position="left" class="left-sockets"></fbp-sockets>
 
 		<div position="top"></div>
 
@@ -19,6 +19,6 @@
 	<fbp-footer></fbp-footer>
 
 	<div class="header-wrapper">
-		<header>{{node.title}}</header>
+		<header>{{node?.title}}</header>
 	</div>
 </ng-container>

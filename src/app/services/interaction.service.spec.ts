@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DragAndDropService } from './drag-and-drop.service';
+import { DragAndDropService } from './interaction.service';
 
 describe('DragAndDropService', () => {
   let service: DragAndDropService;
