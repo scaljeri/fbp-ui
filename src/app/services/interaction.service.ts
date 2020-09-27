@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IFbpEventConnect } from '../utils/event-types';
+import { FbpElementNames, IActiveElement, IFbpInteractionModel } from '../types/interaction';
+import { IFbpEventConnect, IFbpPointerDownTargets } from '../utils/event-types';
 import { monitorEvents } from '../utils/events/monitor';
 
 export interface PointerEventsHandler {
@@ -7,48 +8,54 @@ export interface PointerEventsHandler {
 	pointerDown(event: PointerEvent): HTMLElement;
 }
 
-interface IActiveNode {
-	element: HTMLElement
-}
-
 @Injectable({
 	providedIn: 'root'
 })
 export class InteractionService {
-	private nodes: IActiveNode[] = [];
-	private activeConnection: IFbpEventConnect;
+	private nodes: IFbpInteractionModel[] = [];
+	private connection: IFbpEventConnect;
+	private active: IActiveElement;
 
-	on(element: HTMLElement): void {
-		if (this.activeConnection) {
-			this.activeConnection.disconnect();
+	activate(component: IFbpInteractionModel): void {
+		if (this.connection) {
+			this.connection.disconnect();
 		}
 
-		this.activeConnection = monitorEvents(element, {
-			down: event => {
-				// Check welk element er gesleept gaat worden
-			}
-		});
-		this.nodes.push({element});
-		this.startMonitoring(element);
+		this.nodes.push(component);
+		this.startMonitoring(component);
 	}
 
-	off(element: HTMLElement): void {
+	deactivate(component: IFbpInteractionModel): void {
 		let last = this.nodes.pop();
-		if (element !== last.element) {
-			console.error('InteractionService#off: element to be removed does not match last element in active-node-list', element, last.element);
+		if (component !== last) {
+			console.error('InteractionService#off: element to be removed does not match last element in active-node-list');
 		}
 
-		this.activeConnection.disconnect();
+		this.connection.disconnect();
 
 		last = this.nodes[this.nodes.length - 1];
 		if (last) {
-			this.startMonitoring(last.element);
+			this.startMonitoring(last);
 		}
 	}
 
-	startMonitoring(element): void {
-		this.activeConnection = monitorEvents(element, {});
+	on(active: any): void {
 
 	}
+
+	isSocketActive(): boolean {
+		return this.active ? this.active.name === FbpElementNames.socket : false;
+	}
+
+	startMonitoring(component: IFbpInteractionModel): void {
+		this.connection = monitorEvents(component.element.nativeElement, {
+			down: (event: PointerEvent): IFbpPointerDownTargets => {
+				if (this.isSocketActive()) {
+					return { target: this.active.element, ghost: component.socketGhost.nativeElement }
+				}
+			}
+		});
+	}
 }
+
 

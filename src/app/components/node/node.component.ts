@@ -10,7 +10,8 @@ import {
 	ChangeDetectorRef,
 	HostBinding,
 	OnDestroy,
-	HostListener
+	HostListener,
+	ViewChild
 } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { IFbpNode, IFbpState } from '@scaljeri/fbp-core';
@@ -21,6 +22,7 @@ import { fbpDispatchEvent } from 'src/app/utils/event';
 import { New } from 'src/app/store/actions/state';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
 import { InteractionService } from 'src/app/services/interaction.service';
+import { IFbpInteractionModel } from 'src/app/types/interaction';
 
 @Component({
 	templateUrl: './node.component.html',
@@ -28,7 +30,7 @@ import { InteractionService } from 'src/app/services/interaction.service';
 	encapsulation: ViewEncapsulation.ShadowDom,
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class NodeComponent implements IFbpInteractionModel, OnInit, AfterViewInit, OnDestroy, OnChanges {
 	@Input() id: string;
 
 	@HostBinding('class.fbp-full-size') 
@@ -49,6 +51,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
 	public connections; // ???????
 	public isRootNode = false;
+
+	@ViewChild('socketGost') socketGhost: ElementRef;
 
 	@HostBinding('class.is-fbp-flow')
 	get isFlow(): boolean {
@@ -72,11 +76,11 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
 	constructor(
 		// @Attribute('type') public type: string,
-		protected element: ElementRef,
-		protected store: Store,
-		protected cdr: ChangeDetectorRef,
+		public element: ElementRef,
+		private store: Store,
+		private cdr: ChangeDetectorRef,
 		private interactionService: InteractionService,
-		protected nodeService: NodeManagerService) {
+		private nodeService: NodeManagerService) {
 		// this.node$ = this.store
 		// 	.select(FfpState).pipe(
 		// 		tap(d => console.log('tap', d)),
@@ -197,7 +201,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, OnChange
 
 		this.newState(state);
 		this.isRootNode = true;
-		this.interactionService.on(this.element.nativeElement);
+		this.interactionService.activate(this);
 		// this.nodes = this.element.nativeElement.shadowRoot.querySelector('slot').assignedElements();
 
 		// This is the main node -> fullscreen always??
