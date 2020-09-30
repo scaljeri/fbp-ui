@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { FbpElementNames, IActiveElement, IFbpInteractionModel } from '../types/interaction';
-import { IFbpEventConnect, IFbpPointerDownTargets } from '../utils/event-types';
+import { IFbpEventConnect, IFbpEventState, IFbpPointerDownTargets } from '../utils/event-types';
 import { monitorEvents } from '../utils/events/monitor';
 
 export interface PointerEventsHandler {
@@ -15,6 +15,8 @@ export class InteractionService {
 	private nodes: IFbpInteractionModel[] = [];
 	private connection: IFbpEventConnect;
 	private active: IActiveElement;
+
+	constructor(private ngZone: NgZone) { }
 
 	activate(component: IFbpInteractionModel): void {
 		if (this.connection) {
@@ -40,7 +42,7 @@ export class InteractionService {
 	}
 
 	on(active: any): void {
-
+		// 
 	}
 
 	isSocketActive(): boolean {
@@ -48,12 +50,25 @@ export class InteractionService {
 	}
 
 	startMonitoring(component: IFbpInteractionModel): void {
-		this.connection = monitorEvents(component.element.nativeElement, {
-			down: (event: PointerEvent): IFbpPointerDownTargets => {
-				if (this.isSocketActive()) {
-					return { target: this.active.element, ghost: component.socketGhost.nativeElement }
+		let dragEl: HTMLElement;
+
+		this.ngZone.runOutsideAngular(() => {
+			this.connection = monitorEvents(component.element.nativeElement, {
+				down: (event: PointerEvent): IFbpPointerDownTargets => {
+					console.log('PointerDown');
+
+					dragEl = (event.target as HTMLElement).closest('fbp-node') as HTMLElement;
+
+					return { target: dragEl }
+					// if (this.isSocketActive()) {
+					// 	return { target: this.active.element, ghost: component.socketGhost.nativeElement }
+					// }
+				},
+				move: (event: PointerEvent, state: IFbpEventState): void => {
+					dragEl.style.left = state.x + 'px';
+					dragEl.style.top = state.y + 'px';
 				}
-			}
+			});
 		});
 	}
 }

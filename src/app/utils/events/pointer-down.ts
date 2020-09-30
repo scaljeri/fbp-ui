@@ -26,7 +26,7 @@ function initializeState(target: HTMLElement, event: PointerEvent, dragRect: DOM
 	if (target) {
 		const targetRect = target.getBoundingClientRect();
 
-		target = target
+		state.target = target
 		state.targetRect = targetRect;
 		state.initStartX = target.style.left;
 		state.initStartY = target.style.top;

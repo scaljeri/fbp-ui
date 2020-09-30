@@ -75,7 +75,6 @@ export class NodeComponent implements IFbpInteractionModel, OnInit, AfterViewIni
 	// @Select(FbpState) state$: Observable<FbpState>;
 
 	constructor(
-		// @Attribute('type') public type: string,
 		public element: ElementRef,
 		private store: Store,
 		private cdr: ChangeDetectorRef,

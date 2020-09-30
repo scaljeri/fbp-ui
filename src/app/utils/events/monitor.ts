@@ -4,11 +4,11 @@ import { pointerUp } from './pointer-up';
 import { IFbpEventConnect, IFbpEventState, IFbpPointerEventHandlers } from '../event-types';
 
 export function monitorEvents(element: HTMLElement, handlers: IFbpPointerEventHandlers = {}): IFbpEventConnect {
-	const state: IFbpEventState[] = [];
+	const states: IFbpEventState[] = [];
 
-	const pDownHandler = pointerDown(element, handlers, state);
-	const pMoveFn = pointerMove(handlers, state);
-	const pUpFn = pointerUp(handlers, state);
+	const pDownHandler = pointerDown(element, handlers, states);
+	const pMoveFn = pointerMove(handlers, states);
+	const pUpHandler = pointerUp(handlers, states);
 	// Only start monitoring movements on 'pointerdown'
 	const pDownFn = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -17,17 +17,24 @@ export function monitorEvents(element: HTMLElement, handlers: IFbpPointerEventHa
 
 		element.addEventListener('pointermove', pMoveFn);
 		element.addEventListener('pointerup', pUpFn);
+		element.addEventListener('pointerleave', pUpFn);
+	};
+
+	const pUpFn = (event: PointerEvent) => {
+		event.stopPropagation();
+		pUpHandler(event);
+
+		element.removeEventListener('pointermove', pMoveFn);
+		element.removeEventListener('pointerup', pUpFn);
 		element.removeEventListener('pointerleave', pUpFn);
 	};
 
 	element.addEventListener('pointerdown', pDownFn);
-
-	return {
-		disconnect: () => {
+	const disconnect = () => {
 			element.removeEventListener('pointerdown', pDownFn);
 			element.removeEventListener('pointermove', pMoveFn);
 			element.removeEventListener('pointerup', pUpFn);
 			element.removeEventListener('pointerleave', pUpFn);
-		}
 	};
+	return { disconnect };
 }

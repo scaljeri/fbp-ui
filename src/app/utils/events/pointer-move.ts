@@ -4,6 +4,7 @@ export const pointerMove = (handlers: IFbpPointerEventHandlers, states: IFbpEven
 	return (event: PointerEvent): void => {
 		event.stopPropagation();
 
+		console.log('move');
 		states.forEach(state => {
 			if (state.target) {
 				updateCoordinates(event, state);
