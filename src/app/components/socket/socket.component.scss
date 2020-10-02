@@ -12,15 +12,15 @@ $size-large: 24px;
     var(--fbp-socket-border, #{$border})
   );
   --border-right: var(
-    --fbp-socket-border-top,
+    --fbp-socket-border-right,
     var(--fbp-socket-border, #{$border})
   );
   --border-bottom: var(
-    --fbp-socket-border-top,
+    --fbp-socket-border-bottom,
     var(--fbp-socket-border, #{$border})
   );
   --border-left: var(
-    --fbp-socket-border-top,
+    --fbp-socket-border-left,
     var(--fbp-socket-border, #{$border})
   );
 
@@ -47,22 +47,22 @@ $size-large: 24px;
   @include fbp-size(var(--fbp-socket-size-large, #{$size-large}))
 }
 
-:host(.left) {
-  --border-left: transparent;
-  --border-bottom: transparent;
-}
+// :host(.left) {
+//   --border-left: transparent;
+//   --border-bottom: transparent;
+// }
 
-:host(.right) {
-  --border-right: transparent;
-  --border-top: transparent;
-}
+// :host(.right) {
+//   --border-right: transparent;
+//   --border-top: transparent;
+// }
 
-:host(.top) {
-  --border-left: transparent;
-  --border-top: transparent;
-}
+// :host(.top) {
+//   --border-left: transparent;
+//   --border-top: transparent;
+// }
 
-:host(.bottom) {
-  --border-right: transparent;
-  --border-bottom: transparent;
-}
+// :host(.bottom) {
+//   --border-right: transparent;
+//   --border-bottom: transparent;
+// }

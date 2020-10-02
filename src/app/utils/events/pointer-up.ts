@@ -1,15 +1,13 @@
-import { IFbpEventState, IFbpPointerEventHandlers } from '../event-types';
+import { IFbpInteractionContext, IFbpInteractionState } from '../event-types';
 
-const pointerUp = (handlers: IFbpPointerEventHandlers, states: IFbpEventState[]): (e: PointerEvent) => void => {
-	return (event: PointerEvent): void => {
-		event.stopPropagation();
+const pointerUp = (event: PointerEvent, context: IFbpInteractionContext, states: IFbpInteractionState[]): void => {
+	event.stopPropagation();
 
-		if (handlers.up) {
-			states.forEach(state => {
-				handlers.up(event, state);
-			});
-		}
-	};
+	if (context.up) {
+		states.forEach(state => {
+			context.up(event, state);
+		});
+	}
 }
 
 export { pointerUp };

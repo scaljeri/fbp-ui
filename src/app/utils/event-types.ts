@@ -36,7 +36,7 @@ import { IFbpPosition } from '@scaljeri/fbp-core';
 // 	noResetIfClick?: boolean;
 // }
 
-export interface IFbpEventState {
+export interface IFbpInteractionState {
 	parentRect: DOMRect;
 	startTime: number;
 	startX: number;
@@ -62,11 +62,14 @@ export interface IFbpPointerDownTargets {
 	ghost?: HTMLElement; // Only allowed in combination with 'target'
 }
 
-export interface IFbpPointerEventHandlers {
+export type IFbpGetContext = (event: PointerEvent) => IFbpInteractionContext;
+
+export interface IFbpInteractionContext {
+	targets?: HTMLElement[],
 	down?: (event: PointerEvent) => IFbpPointerDownTargets | void,
-	up?: (event: PointerEvent, state: IFbpEventState) => void,
-	click?: (event: PointerEvent, state: IFbpEventState) => void,
-	doubleClick?: (event: PointerEvent, state: IFbpEventState) => void,
-	move?: (event: PointerEvent, state: IFbpEventState) => void,
-	longpress?: (event: PointerEvent, state: IFbpEventState) => void
+	up?: (event: PointerEvent, state: IFbpInteractionState) => void,
+	click?: (event: PointerEvent, state: IFbpInteractionState) => void,
+	doubleClick?: (event: PointerEvent, state: IFbpInteractionState) => void,
+	move?: (event: PointerEvent, state: IFbpInteractionState) => void,
+	longpress?: (event: PointerEvent, state: IFbpInteractionState) => void
 }

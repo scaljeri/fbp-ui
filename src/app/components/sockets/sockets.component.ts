@@ -26,9 +26,7 @@ export class SocketsComponent implements OnInit, OnChanges {
 
   @HostListener('pointerdown', ['$event'])
   onPointerDown(event): void {
-	// event.stopPropagation();
 	console.log('Sockets: ....');
-
-    // register, bla bla
+	// Check if it was a socket click
   }
 }

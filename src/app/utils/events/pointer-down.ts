@@ -1,27 +1,24 @@
-import { IFbpEventState, IFbpPointerEventHandlers } from '../event-types';
+import { IFbpInteractionContext, IFbpInteractionState } from '../event-types';
 
 const pointerDown = (
+	event: PointerEvent,
 	parent: HTMLElement,
-	handlers: IFbpPointerEventHandlers,
-	states: IFbpEventState[]): (e: PointerEvent) => void => {
-		
-	return (event: PointerEvent): void => {
+	context: IFbpInteractionContext): IFbpInteractionState[] => {
+	const parentRect = parent.getBoundingClientRect();
 
-		const output = handlers.down ? handlers.down(event) || {} : {};
-		const parentRect = parent.getBoundingClientRect();
+	const states = [];
+	(context.targets || []).forEach(element => states.push(initializeState(element, event, parentRect)));
 
-		states.length = 0;
-		(output.targets || [output.target]).forEach(element => states.push(initializeState(element, event, parentRect)));
-	};
+	return states;
 }
 
-function initializeState(target: HTMLElement, event: PointerEvent, dragRect: DOMRect): IFbpEventState {
+function initializeState(target: HTMLElement, event: PointerEvent, dragRect: DOMRect): IFbpInteractionState {
 	const state = {
 		parentRect: dragRect,
 		startTime: Date.now(),
 		startX: event.clientX,
 		startY: event.clientY,
-	} as IFbpEventState;
+	} as IFbpInteractionState;
 
 	if (target) {
 		const targetRect = target.getBoundingClientRect();

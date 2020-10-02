@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { FbpElementNames, IActiveElement, IFbpInteractionModel } from '../types/interaction';
-import { IFbpEventConnect, IFbpEventState, IFbpPointerDownTargets } from '../utils/event-types';
+import { IFbpEventConnect, IFbpInteractionState  } from '../utils/event-types';
 import { monitorEvents } from '../utils/events/monitor';
 
 export interface PointerEventsHandler {
@@ -53,20 +53,16 @@ export class InteractionService {
 		let dragEl: HTMLElement;
 
 		this.ngZone.runOutsideAngular(() => {
-			this.connection = monitorEvents(component.element.nativeElement, {
-				down: (event: PointerEvent): IFbpPointerDownTargets => {
-					console.log('PointerDown');
+			this.connection = monitorEvents(component.element.nativeElement, (event: PointerEvent) => {
+				console.log('PointerDown');
 
-					dragEl = (event.target as HTMLElement).closest('fbp-node') as HTMLElement;
-
-					return { target: dragEl }
-					// if (this.isSocketActive()) {
-					// 	return { target: this.active.element, ghost: component.socketGhost.nativeElement }
-					// }
-				},
-				move: (event: PointerEvent, state: IFbpEventState): void => {
-					dragEl.style.left = state.x + 'px';
-					dragEl.style.top = state.y + 'px';
+				const target = (event.target as HTMLElement).closest('fbp-node') as HTMLElement;
+				return {
+					targets: [target],
+					move: (event: PointerEvent, state: IFbpInteractionState): void => {
+						target.style.left = state.x + 'px';
+						target.style.top = state.y + 'px';
+					}
 				}
 			});
 		});

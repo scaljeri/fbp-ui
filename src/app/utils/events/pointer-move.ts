@@ -1,23 +1,22 @@
-import { IFbpPointerEventHandlers, IFbpEventState } from '../event-types';
+import { IFbpInteractionContext, IFbpInteractionState } from '../event-types';
 
-export const pointerMove = (handlers: IFbpPointerEventHandlers, states: IFbpEventState[]): (e: PointerEvent) => void => {
-	return (event: PointerEvent): void => {
-		event.stopPropagation();
+const pointerMove = (event: PointerEvent, context: IFbpInteractionContext, states: IFbpInteractionState[]): void => {
+	event.stopPropagation();
 
-		console.log('move');
-		states.forEach(state => {
-			if (state.target) {
-				updateCoordinates(event, state);
-			}
+	states.forEach(state => {
+		if (state.target) {
+			updateCoordinates(event, state);
+		}
 
-			if (handlers.move) {
-				handlers.move(event, state);
-			}
-		});
-	}
+		if (context.move) {
+			context.move(event, state);
+		}
+	});
 }
 
-const updateCoordinates = (event: PointerEvent, state: IFbpEventState): void => {
+export { pointerMove };
+
+const updateCoordinates = (event: PointerEvent, state: IFbpInteractionState): void => {
 	const x = event.clientX;
 	const y = event.clientY;
 

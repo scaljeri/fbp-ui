@@ -8,7 +8,6 @@
   --socket-bg: var(--fbp-socket-bg, #fff);
   --socket-dropzone: var(--fbp-socket-dropzone-bg, var(--socket-border));
   // background-color: var(--socket-dropzone);
-
 }
 
 // :host(.dropable) {
@@ -18,7 +17,6 @@
 :host-context(.drag-socket) {
   background-color: green;
 }
-
 
 :host([position='top']) {
   ol {
@@ -44,8 +42,11 @@
     flex-direction: column;
   }
 
+  --fbp-socket-border-bottom: transparent;
+  --fbp-socket-border-left: transparent;
+
   // li {
-    // border-color: var(--socket-border) var(--socket-border) transparent transparent;
+  // border-color: var(--socket-border) var(--socket-border) transparent transparent;
   // }
 }
 
@@ -54,8 +55,11 @@
     flex-direction: column;
   }
 
+  --fbp-socket-border-top: transparent;
+  --fbp-socket-border-right: transparent;
+
   // li {
-    // border-color: transparent transparent var(--socket-border) var(--socket-border) ;
+  // border-color: transparent transparent var(--socket-border) var(--socket-border) ;
   // }
 }
 
@@ -63,6 +67,8 @@
   // li {
   //   border-color: transparent var(--socket-border) var(--socket-border) transparent ;
   // }
+  --fbp-socket-border-top: transparent;
+  --fbp-socket-border-left: transparent;
 }
 
 :host([position='bottom']) {
@@ -71,8 +77,9 @@
   //   margin-bottom: 1px;
   //   border-color: var(--socket-border) transparent transparent var(--socket-border);
   // }
+  --fbp-socket-border-right: transparent;
+  --fbp-socket-border-bottom: transparent;
 }
-
 
 ol {
   align-items: center;
