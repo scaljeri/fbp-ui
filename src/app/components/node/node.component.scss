@@ -46,6 +46,15 @@
 	}
 }
 
+:host(.fbp-socket-dnd) {
+  --sock-w: 20px;
+
+  &.fbp-full-size {
+	  --sock-w: 60px;
+  }
+
+}
+
 fbp-sockets {
   position: relative;
   z-index: 1;
@@ -60,7 +69,7 @@ fbp-sockets {
     grid-column-end: 3;
     grid-row-start: 1;
     grid-row-end: 2;
-    // background-color: green;
+    background-color: green;
     margin-top: -2px;
   }
 
@@ -69,7 +78,7 @@ fbp-sockets {
     grid-column-end: 4;
     grid-row-start: 2;
     grid-row-end: 3;
-    // background-color: purple;
+    background-color: purple;
     margin-right: -2px;
   }
 
@@ -78,7 +87,7 @@ fbp-sockets {
     grid-column-end: 3;
     grid-row-start: 3;
     grid-row-end: 4;
-    // background-color: yellow;
+    background-color: yellow;
     margin-bottom: -2px;
   }
 
@@ -87,7 +96,7 @@ fbp-sockets {
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 3;
-    // background-color: blue;
+    background-color: blue;
     margin-left: -2px;
   }
 }

@@ -1,5 +1,14 @@
 import { ElementRef } from '@angular/core';
 
+/* Usage:
+	fbpDispatchEvent('fbp-ready', this.element, {
+		detail: { // anything goes in here!
+			init: (state: IFbpState) => {
+				this.setState(state);
+			}
+		}
+	});
+*/
 export function fbpDispatchEvent(
 	eventName: string,
 	element?: ElementRef,

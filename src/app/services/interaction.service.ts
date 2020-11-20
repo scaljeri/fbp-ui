@@ -1,7 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
-import { FbpElementNames, IActiveElement, IFbpInteractionModel } from '../types/interaction';
-import { IFbpEventConnect, IFbpInteractionState  } from '../utils/event-types';
+import { IActiveElement, IFbpInteractionComponent } from '../types/interaction';
+import { IFbpEventConnect } from '../utils/event-types';
 import { monitorEvents } from '../utils/events/monitor';
+import { FbpInteractionContexts } from '../constants/interaction';
+import { getSocketContext } from '../utils/events/context-socket';
+import { getNodeContext, isNodeTarget } from '../utils/events/context-node';
 
 export interface PointerEventsHandler {
 	updatePosition(x: number, y: number): void;
@@ -12,13 +15,13 @@ export interface PointerEventsHandler {
 	providedIn: 'root'
 })
 export class InteractionService {
-	private nodes: IFbpInteractionModel[] = [];
-	private connection: IFbpEventConnect;
-	private active: IActiveElement;
+	private nodes: IFbpInteractionComponent[] = [];
+	private connection!: IFbpEventConnect;
+	private active!: IActiveElement | null;
 
 	constructor(private ngZone: NgZone) { }
 
-	activate(component: IFbpInteractionModel): void {
+	activate(component: IFbpInteractionComponent): void {
 		if (this.connection) {
 			this.connection.disconnect();
 		}
@@ -27,7 +30,7 @@ export class InteractionService {
 		this.startMonitoring(component);
 	}
 
-	deactivate(component: IFbpInteractionModel): void {
+	deactivate(component: IFbpInteractionComponent): void {
 		let last = this.nodes.pop();
 		if (component !== last) {
 			console.error('InteractionService#off: element to be removed does not match last element in active-node-list');
@@ -41,31 +44,46 @@ export class InteractionService {
 		}
 	}
 
-	on(active: any): void {
+	on(active: IActiveElement): void {
 		// 
+		this.active = active;
 	}
 
-	isSocketActive(): boolean {
-		return this.active ? this.active.name === FbpElementNames.socket : false;
-	}
-
-	startMonitoring(component: IFbpInteractionModel): void {
+	startMonitoring(component: IFbpInteractionComponent): void {
 		let dragEl: HTMLElement;
 
 		this.ngZone.runOutsideAngular(() => {
-			this.connection = monitorEvents(component.element.nativeElement, (event: PointerEvent) => {
-				console.log('PointerDown');
+			this.connection = monitorEvents(component.element, (event: PointerEvent) => {
+				let context: any; // TODO
 
-				const target = (event.target as HTMLElement).closest('fbp-node') as HTMLElement;
-				return {
-					targets: [target],
-					move: (event: PointerEvent, state: IFbpInteractionState): void => {
-						target.style.left = state.x + 'px';
-						target.style.top = state.y + 'px';
+				if (this.active) {
+					switch (this.active.context) {
+						case FbpInteractionContexts.socket:
+							context = getSocketContext(event, { up: () =>  this.reset(event)}, component, this.active );
+							break;
 					}
+
+				} else if (isNodeTarget(event, component)) {
+					context = getNodeContext(event, component, this.active!);
 				}
+
+
+				// const target = (event.target as HTMLElement).closest('fbp-node') as HTMLElement;
+				// return {
+				// 	targets: [target],
+				// 	move: (event: PointerEvent, state: IFbpInteractionState): void => {
+				// 		target.style.left = state.x + 'px';
+				// 		target.style.top = state.y + 'px';
+				// 	}
+				// }
+
+				return context;
 			});
 		});
+	}
+
+	reset(event: PointerEvent): void {
+		this.active = null;
 	}
 }
 

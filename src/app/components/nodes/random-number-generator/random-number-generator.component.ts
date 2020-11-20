@@ -7,7 +7,7 @@ import { Component, OnInit, ChangeDetectionStrategy, NgZone, ChangeDetectorRef }
 })
 export class RandomNumberGeneratorComponent implements OnInit {
 
-  public value: number;
+  public value!: number;
 
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
 

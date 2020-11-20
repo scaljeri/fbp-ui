@@ -1,22 +1,24 @@
-<ng-container *ngIf="node || isRootNode">
+<ng-container *ngIf="node">
 	<!-- <fbp-connections *ngIf="connections" [parentId]="id"></fbp-connections> -->
 	<fbp-socket #socketGost style="display:none"></fbp-socket>
 
 	<section [ngClass]="cls">
-		<fbp-sockets [sockets]="node?.sockets" position="top" class="left-sockets"></fbp-sockets>
-		<fbp-sockets [sockets]="node?.sockets" position="right" class="left-sockets"></fbp-sockets>
-		<fbp-sockets [sockets]="node?.sockets" position="bottom" class="left-sockets"></fbp-sockets>
-		<fbp-sockets [sockets]="node?.sockets" position="left" class="left-sockets"></fbp-sockets>
-
-		<div position="top"></div>
+		<fbp-sockets [nodeId]="id" [sockets]="sockets | socket:socketPositions.TOP"
+			position="top" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [nodeId]="id" [sockets]="sockets | socket:socketPositions.RIGHT"
+			position="right" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [nodeId]="id" [sockets]="sockets | socket:socketPositions.BOTTOM"
+			position="bottom" class="left-sockets"></fbp-sockets>
+		<fbp-sockets [nodeId]="id" [sockets]="sockets | socket:socketPositions.LEFT"
+			position="left" class="left-sockets"></fbp-sockets>
 
 		<div class="content">
 			<!-- <header>{{node.title}}</header> -->
-			<slot></slot>
+			<slot (slotchange)="onContentChange($event)"></slot>
 		</div>
 	</section>
 
-	<fbp-footer></fbp-footer>
+	<!-- <fbp-footer></fbp-footer> -->
 
 	<div class="header-wrapper">
 		<header>{{node?.title}}</header>

@@ -16,7 +16,8 @@
       "dom"
     ],
     "types": [ "jest" ],
-    "skipLibCheck": true
+	"skipLibCheck": true,
+	"strict": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

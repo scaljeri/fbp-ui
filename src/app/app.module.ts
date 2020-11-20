@@ -16,6 +16,8 @@ import { LoggerComponent } from './components/nodes/logger/logger.component';
 import { SocketsComponent } from './components/sockets/sockets.component';
 import { GearComponent } from './components/gear/gear.component';
 import { SocketComponent } from './components/socket/socket.component';
+import { FbpInnerState } from './store/inner-state';
+import { SocketPipe } from './pipes/socket.pipe';
 
 @NgModule({
   declarations: [
@@ -28,10 +30,11 @@ import { SocketComponent } from './components/socket/socket.component';
     SocketsComponent,
     GearComponent,
     SocketComponent,
+    SocketPipe,
   ],
   imports: [
     BrowserModule,
-    NgxsModule.forRoot([FbpState], {
+    NgxsModule.forRoot([FbpState, FbpInnerState], {
       developmentMode: true,
     }),
     NgxsDispatchPluginModule.forRoot(),

@@ -1,19 +1,38 @@
 import { Injectable } from '@angular/core';
+import { IFbpSocket } from '@scaljeri/fbp-core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { NodeManagerService } from './node-manager.service';
 
-/*
-Is provided at Node level.
-
-Purpose: 
-1) drag sockes => other socke areas need to go into droppable state
-2) click sockes => highlight other sockets red/green
-3) ...
-
-TODO: A subflow-node has sockets which need to respond to both inside and outside
-*/
+export interface IFbpSocketEmitValue {
+    type: 'click' | 'drag';
+    socket: IFbpSocket;
+};
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SocketService {
+    private parentSubjects: Record<string, BehaviorSubject<IFbpSocketEmitValue>> = {};
 
-  constructor() { }
+    constructor(private nodeManager: NodeManagerService) {}
+
+    emit(sourceNodeId: string, parentNodeId: string, value: IFbpSocketEmitValue): void {
+        // if (this.nodeManager.activeNode === parentNodeId) {
+        //     this.findParent(parentNodeId).next(value);
+        // } else {
+        //     this.findParent(sourceNodeId).next(value);
+        // }
+    }
+
+    getParent$(parentId: string): Observable<any> {
+        return this.findParent(parentId).asObservable();
+    }
+
+    private findParent(id: string): BehaviorSubject<IFbpSocketEmitValue> {
+        if (!this.parentSubjects[id]) {
+            this.parentSubjects[id] = new BehaviorSubject<any>(null);
+        }
+
+        return this.parentSubjects[id];
+    }
+
 }

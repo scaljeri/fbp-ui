@@ -1,20 +1,22 @@
 import {
-	Component,
-	ElementRef,
-	OnInit,
-	AfterViewInit,
-	OnChanges,
-	Input,
-	ViewEncapsulation,
-	ChangeDetectionStrategy,
-	ChangeDetectorRef,
-	HostBinding,
-	OnDestroy,
-	HostListener,
-	ViewChild
+    Component,
+    ElementRef,
+    OnInit,
+    AfterViewInit,
+    OnChanges,
+    Input,
+    ViewEncapsulation,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    HostBinding,
+    OnDestroy,
+    ViewChild,
+    Self,
+    HostListener,
+    SimpleChanges,
 } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { IFbpNode, IFbpState } from '@scaljeri/fbp-core';
+import { Select, Store } from '@ngxs/store';
+import { FbpSocketPositions, IFbpNode, IFbpSocket, IFbpState } from '@scaljeri/fbp-core';
 import { FbpState } from 'src/app/store/state';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { Observable } from 'rxjs';
@@ -22,187 +24,272 @@ import { fbpDispatchEvent } from 'src/app/utils/event';
 import { New } from 'src/app/store/actions/state';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
 import { InteractionService } from 'src/app/services/interaction.service';
-import { IFbpInteractionModel } from 'src/app/types/interaction';
+import { IFbpNodeChildConfig } from 'src/app/types/node';
+import { FbpInnerState } from 'src/app/store/inner-state';
+import { ActivateNode } from 'src/app/store/actions/add-node-config';
+import { SocketsManager } from 'src/app/utils/classes/sockets-manager';
+import { interaction2SocketContext } from 'src/app/utils/contexts/interaction2socket-context';
+import { node2SocketContext } from 'src/app/utils/contexts/node2socket-context';
+import { SocketService } from 'src/app/services/socket.service';
+import { IFbpActiveNode, IFbpInnerState } from 'src/app/types/inner-state';
 
 @Component({
-	templateUrl: './node.component.html',
-	styleUrls: ['./node.component.scss'],
-	encapsulation: ViewEncapsulation.ShadowDom,
-	changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './node.component.html',
+    styleUrls: ['./node.component.scss'],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NodeComponent implements IFbpInteractionModel, OnInit, AfterViewInit, OnDestroy, OnChanges {
-	@Input() id: string;
+export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy, OnChanges {
+    @Input() id = 'ROOT';
+    @Select(FbpInnerState) state$!: Observable<IFbpInnerState>;
 
-	@HostBinding('class.fbp-full-size') 
-	get fullSize(): boolean {
-		return this.isRootNode || this.isFullSize;
-	}	
+    public socketPositions = FbpSocketPositions;
 
-	@Dispatch() newState = (state: IFbpState) => new New(state);
+    private state!: IFbpInnerState;
+    public node!: IFbpNode;
 
-	//   protected dragNode: dragUtils.IDrag;
-	protected isActive = false;
+    // @HostBinding('class.fbp-full-size')
+    // get fullSize(): boolean {
+    //     return this.isRootNode || this.state.activeNodes[0].id === this.id;
+    // }
 
-	public isFullSize = false;
-	public node$: Observable<IFbpNode>;
-	public node: IFbpNode;
-	public type: 'root' | null;
-	// public id: string;
+    @HostBinding('class.fbp-socket-dnd') socketDnD = false;
 
-	public connections; // ???????
-	public isRootNode = false;
-
-	@ViewChild('socketGost') socketGhost: ElementRef;
-
-	@HostBinding('class.is-fbp-flow')
-	get isFlow(): boolean {
-		return this.node && !this.node.type;
-	}
+    @Dispatch() newState = (state: IFbpState) => new New(state);
+    @Dispatch() activate = (config: IFbpActiveNode) => new ActivateNode(config);
 
 
-	@HostBinding('style.top')
-	get top(): string {
-		// console.log('change detection ', this.node);
-		return this.node && this.node.ui.position.top + '%';
-	}
+    // protected dragNode: dragUtils.IDrag;
+    // isActive = false;
 
-	@HostBinding('style.left')
-	get left(): string {
-		return this.node && this.node.ui.position.left + '%';
-	}
+    // public isFullSize = false;
+    // public node$!: Observable<IFbpNode>;
+    // public node!: IFbpNode;
+    // public type: 'root' | null;
+    // public id: string;
 
-	// state$;
-	// @Select(FbpState) state$: Observable<FbpState>;
+    // public connections: any; // ???????
+    // public isRootNode = false;
+    // public _socketService!: SocketsManager;
 
-	constructor(
-		public element: ElementRef,
-		private store: Store,
-		private cdr: ChangeDetectorRef,
-		private interactionService: InteractionService,
-		private nodeService: NodeManagerService) {
-		// this.node$ = this.store
-		// 	.select(FfpState).pipe(
-		// 		tap(d => console.log('tap', d)),
-		// 		filter((node: IFbpNode) => node && node.id === this.idx));
-		// this.state$ = this.store.select(FbpState);
-		this.type = element.nativeElement.getAttribute('type');
-	}
+    // get socketsManager(): SocketsManager {
+    //     if (!this._socketService) {
+    //         this._socketService = new SocketsManager();
+    //     }
 
-	ngOnChanges(o): void {
-		if (this.id) {
-			this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
-				if (node) {
-					this.node = node;
-					setTimeout(() => {
-						this.cdr.detectChanges();
-					}, 100);
-				}
-				// this.node = prefillWithDefaults(node);
-			});
-		}
-	}
+    //     return this._socketService;
+    // }
 
-	cls = '';
+    @ViewChild('socketGost') socketGhost!: ElementRef;
 
-	ngOnInit(): void {
-		this.id = this.element.nativeElement.getAttribute('id');
-
-		setTimeout(() => {
-			setTimeout(() => {
-				this.cls = 'normal';
-				this.cdr.detectChanges();
-				fbpDispatchEvent('fbp-ready', this.element, {
-					detail: {
-						init: (state: IFbpState) => {
-							this.isFullSize = true;
-							this.setState(state);
-						}
-					}
-				});
-
-			});
-		});
-		// this.store.select(FbpState.getNode(this.id)).subscribe((node: IFbpNode) => {
-		// this.store.select(FbpState.pandas(this.id)).subscribe((node: IFbpNode) => {
-		//   console.log('-----NODE UPDATE', this.id, node);
-		//   this.node = node;
-		//   // this.cdr.markForCheck();
-		// });
-
-		// this.state$.subscribe(state => {
-		// 	console.log('NodeComponent@state yesyes', state);
-		// }ci)
+    @HostBinding('class.is-fbp-flow')
+    get isFlow(): boolean {
+        return this.node && !this.node.type;
+    }
 
 
-		// setTimeout(() => {
-		// 	const x = this.element.nativeElement.querySelector('[name=small]');
-		// 	const slot = this.element.nativeElement.shadowRoot.querySelector('slot[name=small]').assignedElements()[0];
+    @HostBinding('style.top')
+    get top(): string {
+        // console.log('change detection ', this.node);
+        return this.node?.ui?.position?.top + '%';
+    }
 
-		// 	console.log('XXXXXXXXXXXX=', slot);
-		// }, 1000);
-	}
+    @HostBinding('style.left')
+    get left(): string {
+        return this.node && this.node?.ui?.position?.left + '%';
+    }
 
-	// ngOnChanges(changes: SimpleChanges): void {
-	//   const id = changes.id;
 
-	//   if (id.currentValue) {
-	//     // fbpDispatchEvent(FBP_NODE_EVENTS.ADD, this.element, { detail: { id: this.id } });
-	//     this.nodeService.addNode(this.id, this.element.nativeElement, this);
+    constructor(
+        public element: ElementRef,
+        private store: Store,
+        private cdr: ChangeDetectorRef,
+        private interactionService: InteractionService,
+        private socketService: SocketService,
+        private nodeService: NodeManagerService) {
+        // @Self() public socketService: SocketService) {
+        // this.node$ = this.store
+        // 	.select(FfpState).pipe(
+        // 		tap(d => console.log('tap', d)),
+        // 		filter((node: IFbpNode) => node && node.id === this.idx));
+        // this.state$ = this.store.select(FbpState);
+        // this.type = element.nativeElement.getAttribute('type');
+    }
 
-	//     this.node$ = this.store.select(FbpState.getNode(this.id));
-	//     this.cdr.detectChanges();
-	//     this.node$.subscribe(node => {
-	//       if (node) {
-	//         console.log('xxxxNodeComponent@node$', node);
-	//         this.node = node;
-	//         this.cdr.detectChanges();
-	//       }
-	//     });
+    ngOnChanges(changes: SimpleChanges): void {
+        if (this.id) {
+            this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
+                if (node) {
+                    this.node = node;
+                    setTimeout(() => {
+                        this.cdr.detectChanges();
+                    }, 100);
 
-	//   }
-	// }
+                    this.nodeConfig();
 
-	ngAfterViewInit(): void {
+                    // this.nodeService.addNode(this.id, node.parentId, this.element.nativeElement, this, {
+                    // 	socketService: this.socketService
+                    // });
+                }
+            });
+        }
+    }
 
-		// setTimeout(() => {
-		//   this.id = this.element.nativeElement.getAttribute('id');
+    cls = '';
 
-		//   debugger;
-		// }, 1000);
-		// console.log('Node::::', this.element.nativeElement.children, this.element.nativeElement.children.item(0), child);
-		// child.setSocket('yes from parent');
-		// setTimeout(() => {
-		// 	console.log('delayNODE id= ' + this.idx);
-		// });
-		// 	console.log('NODE id= ' + this.idx);
-		// 	// this.node$ = this.store.select(FbpState); //.getNode(this.idx));
-		// 	this.node$ = this.store.select(FbpState.getNode(this.idx));
-		// 	// });
-		// 	this.node$.subscribe(node => {
-		// 		console.log('*********', node);
-		// 		this.node = node;
-		// 	});
-	}
+    ngOnInit(): void {
 
-	ngOnDestroy(): void {
-		// const event = fbpDispatchEvent(FBP_NODE_EVENTS.REMOVE, null, { detail: this.id });
-		// this.element.nativeElement.parentNode.dispatchEvent(event);
-		// this.nodeService.removeNode(this.id);
-	}
+        // this.id = this.element.nativeElement.getAttribute('id');
+        // debugger;
 
-	@HostListener('fbp-ready', ['$event'])
-	ready(event): void {
-		event.stopPropagation();
-	}
+        // setTimeout(() => {
+        // setTimeout(() => {
+        this.cls = 'normal';
+        this.cdr.detectChanges();
+        fbpDispatchEvent('fbp.ready', this.element, {
+            detail: {
+                init: (state: IFbpState) => this.setState(state)
+            }
+        });
 
-	setState(state: IFbpState): void {
-		// this.state = state;
+        // });
+        // });
+        // this.store.select(FbpState.getNode(this.id)).subscribe((node: IFbpNode) => {
+        // this.store.select(FbpState.pandas(this.id)).subscribe((node: IFbpNode) => {
+        //   console.log('-----NODE UPDATE', this.id, node);
+        //   this.node = node;
+        //   // this.cdr.markForCheck();
+        // });
 
-		this.newState(state);
-		this.isRootNode = true;
-		this.interactionService.activate(this);
-		// this.nodes = this.element.nativeElement.shadowRoot.querySelector('slot').assignedElements();
+        // this.state$.subscribe(state => {
+        // 	console.log('NodeComponent@state yesyes', state);
+        // }ci)
 
-		// This is the main node -> fullscreen always??
-	}
+
+        // setTimeout(() => {
+        // 	const x = this.element.nativeElement.querySelector('[name=small]');
+        // 	const slot = this.element.nativeElement.shadowRoot.querySelector('slot[name=small]').assignedElements()[0];
+
+        // 	console.log('XXXXXXXXXXXX=', slot);
+        // }, 1000);
+    }
+
+    // ngOnChanges(changes: SimpleChanges): void {
+    //   const id = changes.id;
+
+    //   if (id.currentValue) {
+    //     // fbpDispatchEvent(FBP_NODE_EVENTS.ADD, this.element, { detail: { id: this.id } });
+    // this.nodeService.addNode(this.id, this.element.nativeElement, this);
+
+    //     this.node$ = this.store.select(FbpState.getNode(this.id));
+    //     this.cdr.detectChanges();
+    //     this.node$.subscribe(node => {
+    //       if (node) {
+    //         console.log('xxxxNodeComponent@node$', node);
+    //         this.node = node;
+    //         this.cdr.detectChanges();
+    //       }
+    //     });
+
+    //   }
+    // }
+
+    ngAfterViewInit(): void {
+        // this.socketsManager.setInteractionContext(interaction2SocketContext(this.interactionService));
+        // setTimeout(() => {
+        //   this.id = this.element.nativeElement.getAttribute('id');
+
+        //   debugger;
+        // }, 1000);
+        // console.log('Node::::', this.element.nativeElement.children, this.element.nativeElement.children.item(0), child);
+        // child.setSocket('yes from parent');
+        // setTimeout(() => {
+        // 	console.log('delayNODE id= ' + this.idx);
+        // });
+        // 	console.log('NODE id= ' + this.idx);
+        // 	// this.node$ = this.store.select(FbpState); //.getNode(this.idx));
+        // 	this.node$ = this.store.select(FbpState.getNode(this.idx));
+        // 	// });
+        // 	this.node$.subscribe(node => {
+        // 		console.log('*********', node);
+        // 		this.node = node;
+        // 	});
+    }
+
+    ngOnDestroy(): void {
+        // const event = fbpDispatchEvent(FBP_NODE_EVENTS.REMOVE, null, { detail: this.id });
+        // this.element.nativeElement.parentNode.dispatchEvent(event);
+        this.nodeService.removeNode(this.id);
+    }
+
+    @HostListener('fbp.ready', ['$event'])
+    ready(event: CustomEvent): void {
+        event.stopPropagation();
+    }
+
+    setState(state: IFbpState): void {
+        // this.state = state;
+
+        this.newState(state);
+        this.node = { id: 'root'};
+        this.activate({ id: 'root' });
+
+        // this.isRootNode = true;
+        // setTimeout(() => {
+        //     this.interactionService.activate({
+        //         disconnect: () => { },
+        //         element: this.element.nativeElement,
+        //         socketGhost: this.socketGhost.nativeElement,
+        //     });
+        // }, 200);
+        // this.nodes = this.element.nativeElement.shadowRoot.querySelector('slot').assignedElements();
+
+        // This is the main node -> fullscreen always??
+        // this.nodeService.addNode(null, null, this.element.nativeElement, this, {
+        // 	socketService: this.socketService
+        // });
+        this.nodeConfig();
+    }
+
+    onContentChange(event: any): void {
+    }
+
+    setParentConfig(parentConfig: IFbpNodeChildConfig): void {
+        console.log(this.id + ' received parent config')
+    }
+
+    nodeConfig(): void {
+        if (this.node) {
+            // this.store.select(FbpInnerState.config(this.node.parentId)).subscribe((config: IFbpNodeChildConfig) => {
+            // 	if (config) {
+            // 		this.config = config;
+
+            // 		console.log('received config', config);
+            // 		// do more stuff here
+            // 	}
+            // });
+
+            // this.store.select(FbpInnerState.config(this.node.parentId || 'root')).subscribe((config: IFbpChildNodeConfig) => {
+            // 	if (config) {
+            // 		this.socketsManager.setParentSocketsContext(node2SocketContext(this.nodeService, this.node));
+            // 	}
+            // });
+
+            // this.socketsManager.setParentSocketsContext(node2SocketContext(this.nodeService, this.node));
+        }
+
+        // this.addNodeConfig({
+        //     id: this.node?.id || 'root',
+        //     socketService: {} as any // this.socketService
+        // });
+    }
+
+    // setFullszie(state: boolean): void {
+    //     this.isFullSize = state;
+    //     this.socketsManager.activate(state);
+    // }
+
+    get sockets(): IFbpSocket[] | undefined {
+        return this.node?.sockets;
+    }
 }

@@ -1,7 +1,10 @@
 import { state } from '@angular/animations';
-import { IFbpEventState } from '../event-types';
 
-export const dndMove = (states: IFbpEventState[], ghost?: HTMLElement): void => {
+export interface IFbpDnD {
+
+}
+
+export const dnd = (start: PointerEvent, states: IFbpEventState[], ghost?: HTMLElement): void => {
 	if (ghost) {
 		updatePosition(ghost, state[0].x, state[0].y)
 	} else {

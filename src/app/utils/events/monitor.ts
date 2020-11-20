@@ -2,20 +2,11 @@ import { pointerDown } from './pointer-down';
 import { pointerMove } from './pointer-move';
 import { pointerUp } from './pointer-up';
 import { IFbpLongPress, longPress } from './long-press';
-import { IFbpEventConnect, IFbpGetContext, IFbpInteractionContext } from '../event-types';
+import { IFbpEventConnect, IFbpEventContext, IFbpGetContext } from '../event-types';
 
 export function monitorEvents(element: HTMLElement, getContext: IFbpGetContext): IFbpEventConnect {
 	let longPressHandlers: IFbpLongPress;
-	let context: IFbpInteractionContext;
-
-	// const pDownHandler = pointerDown(element, handlers, states);
-	// const pMoveHandler = pointerMove(handlers, states);
-	// const pUpHandler = pointerUp(handlers, states);
-
-	// const pMoveFn = (event: PointerEvent) => {
-	// 	longPressHandlers.update(event);
-	// 	pMoveHandler(event);
-	// };
+	let context: IFbpEventContext;
 
 	const pDownFn = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -30,14 +21,18 @@ export function monitorEvents(element: HTMLElement, getContext: IFbpGetContext):
 
 
 		longPressHandlers = longPress(event, (event: PointerEvent) => {
-			// longpress
-			console.log('LongPress');
-			pUpFn(event);
-
+			context.longPress && context.longPress(event, states);
+			pUpFn(event); // clear
 		});
 
 		const pUpFn = (event: PointerEvent) => {
 			event.stopPropagation();
+
+			// Click detected
+			if (longPressHandlers.isPressOnGoing() && longPressHandlers.duration() < 200) {
+				context.click && context.click(event, states);
+			} 
+
 			longPressHandlers.cancel();
 			pointerUp(event, context, states);
 
@@ -51,22 +46,9 @@ export function monitorEvents(element: HTMLElement, getContext: IFbpGetContext):
 		element.addEventListener('pointerleave', pUpFn);
 	};
 
-	// const pUpFn = (event: PointerEvent) => {
-	// 	event.stopPropagation();
-	// 	longPressHandlers.cancel();
-	// 	pUpHandler(event);
-
-	// 	element.removeEventListener('pointermove', pMoveFn);
-	// 	element.removeEventListener('pointerup', pUpFn);
-	// 	element.removeEventListener('pointerleave', pUpFn);
-	// };
-
 	element.addEventListener('pointerdown', pDownFn);
 	const disconnect = () => {
 		element.removeEventListener('pointerdown', pDownFn);
-		// element.removeEventListener('pointermove', pMoveFn);
-		// element.removeEventListener('pointerup', pUpFn);
-		// element.removeEventListener('pointerleave', pUpFn);
 	};
 	return { disconnect };
 }

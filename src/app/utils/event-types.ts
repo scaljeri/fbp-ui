@@ -1,5 +1,3 @@
-import { IFbpPosition } from '@scaljeri/fbp-core';
-
 // interface IDragState {
 // 	target: HTMLElement;
 // 	dragRect: DOMRect;
@@ -57,19 +55,18 @@ export interface IFbpEventConnect {
 }
 
 export interface IFbpPointerDownTargets {
-	target?: HTMLElement;
 	targets?: HTMLElement[];
 	ghost?: HTMLElement; // Only allowed in combination with 'target'
 }
 
-export type IFbpGetContext = (event: PointerEvent) => IFbpInteractionContext;
+export type IFbpGetContext = (event: PointerEvent) => IFbpEventContext;
 
-export interface IFbpInteractionContext {
+export interface IFbpEventContext {
 	targets?: HTMLElement[],
-	down?: (event: PointerEvent) => IFbpPointerDownTargets | void,
+	down?: (event: PointerEvent) => IFbpPointerDownTargets,
 	up?: (event: PointerEvent, state: IFbpInteractionState) => void,
-	click?: (event: PointerEvent, state: IFbpInteractionState) => void,
 	doubleClick?: (event: PointerEvent, state: IFbpInteractionState) => void,
 	move?: (event: PointerEvent, state: IFbpInteractionState) => void,
-	longpress?: (event: PointerEvent, state: IFbpInteractionState) => void
+	click?: (event: PointerEvent, states: IFbpInteractionState[]) => void,
+	longPress?: (event: PointerEvent, states: IFbpInteractionState[]) => void
 }

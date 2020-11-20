@@ -60,7 +60,7 @@
 
 	<script>
 		const fbpMainEl = document.querySelector('fbp-node');
-		fbpMainEl.addEventListener('fbp-ready', ({ detail }) => {
+		fbpMainEl.addEventListener('fbp.ready', ({ detail }) => {
 			console.log('ready node fbp event');
 
 			detail.init(
@@ -79,11 +79,8 @@
 								}
 							},
 							sockets: [
-								{ id: 'wfr2efwdv', type: 'IN' },
-								{
-									id: '3ewfvrgw',
-									type: 'OUT'
-								}
+								{ id: 'wfr2efwdv', type: 'IN', side: 'top' },
+								{ id: '3ewfvrgw', type: 'OUT', side: 'left' }
 							]
 						},
 						// logr: {

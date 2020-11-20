@@ -1,13 +1,13 @@
-import { IFbpInteractionContext, IFbpInteractionState } from '../event-types';
+import { IFbpEventContext, IFbpInteractionState, IFbpPointerDownTargets } from '../event-types';
 
 const pointerDown = (
 	event: PointerEvent,
 	parent: HTMLElement,
-	context: IFbpInteractionContext): IFbpInteractionState[] => {
+	context: IFbpEventContext): IFbpInteractionState[] => {
 	const parentRect = parent.getBoundingClientRect();
-
-	const states = [];
-	(context.targets || []).forEach(element => states.push(initializeState(element, event, parentRect)));
+	const input = context.down!(event); // TODO: Check if down can be null?
+	const states: any = [];
+	(input.targets || []).forEach(element => states.push(initializeState(element, event, parentRect)));
 
 	return states;
 }

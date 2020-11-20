@@ -1,5 +1,9 @@
 :host {
-  --font-family-node-header: var(--fbp-font-family-node-header, courier,arial,helvetica);
-  display: flex;
-  position: relative;
+    --font-family-node-header: var(--fbp-font-family-node-header, courier, arial, helvetica);
+    display: flex;
+    position: relative;
 }
+
+// ::ng-deep * {
+//     -webkit-touch-callout: none !important;
+// }

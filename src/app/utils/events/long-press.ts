@@ -1,18 +1,21 @@
-const WAIT_TIME = 1000;
-const MOVE_THRESHOLD = 20;
+import { MOVE_THRESHOLD, WAIT_TIME } from './constants';
 
 export interface IFbpLongPress {
 	update: (event: PointerEvent) => void,
-	cancel: () => void
+	cancel: () => void,
+	isPressOnGoing: () => boolean,
+	duration: () => number
 }
 
 export const longPress = (start: PointerEvent, cb: (e: PointerEvent) => void): IFbpLongPress => {
 	const x = start.clientX;
 	const y = start.clientY;
+	const starttime = Date.now();
 	let event = start;
 
-	const id = setTimeout(() => {
-		if (Math.abs(x - event.clientX) < MOVE_THRESHOLD && Math.abs(y - event.clientY) < MOVE_THRESHOLD) {
+	let id = window.setTimeout(() => {
+		id = -1;
+		if (isClick(x, y, event)) {
 			cb(event);
 		}
 	}, WAIT_TIME);
@@ -22,7 +25,14 @@ export const longPress = (start: PointerEvent, cb: (e: PointerEvent) => void): I
 			event = move;
 		},
 		cancel: () => {
-			clearTimeout(id);
+			window.clearTimeout(id);
+			id = -1;
 		},
+		isPressOnGoing: () => id >= 0 && isClick(x, y, event),
+		duration: () => Date.now() - starttime
 	};
+}
+
+function isClick(x: number, y: number, event: PointerEvent): boolean {
+	return Math.abs(x - event.clientX) < MOVE_THRESHOLD && Math.abs(y - event.clientY) < MOVE_THRESHOLD;
 }
