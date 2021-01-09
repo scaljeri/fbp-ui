@@ -1,0 +1,78 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+    <template>
+        <h1>Hello Rick!</h1>
+    </template>
+
+    <main>
+        <section>
+            <my-component>
+                <h2>Hello world!</h2>
+            </my-component>
+        </section>
+    </main>
+
+    <script>
+        function dispatchEvent( eventName, element, proto) {
+            const completeProto = Object.assign(
+                {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    composed: true,
+                    target: element,
+                    detail: { /* ??? */ }
+                }, proto);
+
+            const event = new CustomEvent(eventName, completeProto);
+
+            element.dispatchEvent(event);
+        }
+
+        const main = document.querySelector('main');
+        const section = document.querySelector('section');
+
+        main.addEventListener('abc.xyz', (event) => {
+            console.log('outside event abc.xyz:', event.detail.msg);
+        });
+        main.addEventListener('click', (event) => {
+            console.log('MAIN click:', event);
+        });
+        section.addEventListener('click', (event) => {
+            console.log('SECTION click:');
+        }, true);
+
+        class MyComponent extends HTMLElement {
+            connectedCallback() {
+                const shadow = this.attachShadow({ mode: 'open'});
+                const root = this.shadowRoot;
+
+                console.log('my component is connected!');
+                const template = document.querySelector('template');
+                const clone = document.importNode(template.content, true);
+                shadow.appendChild(clone);
+
+                shadow.querySelector('h1').addEventListener('click', () => {
+                    console.log('click in ce');
+
+                    setTimeout(() => {
+                        dispatchEvent('abc.xyz',  shadow.querySelector('h1'), { detail: { msg: 'yolo'}})
+                    }, 1000);
+                }, true)
+
+                this.addEventListener('click', () => {
+                    console.log('HOST element');
+                }, true)
+            }
+        }
+
+        customElements.define('my-component', MyComponent);
+    </script>
+</body>
+
+</html>

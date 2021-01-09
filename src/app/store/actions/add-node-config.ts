@@ -1,5 +1,4 @@
-import { IFbpPosition } from '@scaljeri/fbp-core';
-import { IFbpActiveNode } from 'src/app/types/inner-state';
+import { FbpNodeId, IFbpPosition } from '@scaljeri/fbp-core';
 
 export interface NodeCoordinate {
     id: string;
@@ -8,5 +7,5 @@ export interface NodeCoordinate {
 
 export class ActivateNode {
     static readonly type = '[Node] Activate';
-    constructor(public payload: IFbpActiveNode) { }
+    constructor(public payload: FbpNodeId) { }
 }

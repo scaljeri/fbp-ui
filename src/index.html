@@ -2,113 +2,127 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<title>Els</title>
-	<base href="/">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="utf-8">
+    <title>Els</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-	<style>
-		:root {
-			--fbp-min-node-width: 120px;
-			--fbp-min-node-height: 120px;
-			--fbp-gear-color: #ffffff;
-		}
+    <style>
+        :root {
+            --fbp-min-node-width: 120px;
+            --fbp-min-node-height: 120px;
+            --fbp-gear-color: #ffffff;
+        }
 
-		html,
-		body {
-			height: 100%;
-			margin: 0;
-			padding: 0;
-		}
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-		body {
-			background-color: gray;
-			margin: 20px;
-			height: calc(100% - 40px);
-		}
+        body {
+            background-color: gray;
+            margin: 20px;
+            height: calc(100% - 40px);
+            display: flex;
+        }
 
-		body>fbp-node {
-			/* border: 1px solid #000; */
-			/* height: calc(100% - 40px); */
-			/* width: calc(100% - 40px); */
-			/* background-color: #000; */
-			--fbp-node-bg: #000;
-			height: 100%;
-		}
+        body>article {
+            /* border: 1px solid #000; */
+            /* height: calc(100% - 40px); */
+            /* width: calc(100% - 40px); */
+            /* background-color: #000; */
+            --fbp-node-bg: #000;
+            height: 100%;
+        }
 
-		#flow-a {
-			width: 100px;
-			height: 100px;
-		}
-	</style>
+        #flow-a {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
 </head>
 
 <body>
-	<fbp-node>
-		<fbp-node class="drag-socket" id="rng">
-			<!-- <fbp-random-number-generator></fbp-random-number-generator> -->
-			<fbp-gear></fbp-gear>
-		</fbp-node>
+    <main>
+        <fbp-arena>
+            <fbp-node class="drag-socket" id="rng">
+                <fbp-header fbp-view="header"></fbp-header>
+                <fbp-random-number-generator fbp-view="normal"></fbp-random-number-generator>
+                <fbp-gear fbp-view="small"></fbp-gear>
+            </fbp-node>
 
-		<!-- <fbp-node id="logr">
+            <!-- <fbp-logger id="logr"></fbp-logger> -->
+        </fbp-arena>
+
+        <!-- <fbp-arena>
+            <fbp-node class="drag-socket" id="rng">
+                <fbp-random-number-generator></fbp-random-number-generator>
+                <fbp-gear></fbp-gear>
+            </fbp-node>
+        </fbp-arena> -->
+    </main>
+
+    <!-- <fbp-node id="logr">
       <fbp-logger></fbp-logger>
     </fbp-node>
 
     <fbp-node id="flow-a"></fbp-node> -->
-	</fbp-node>
 
-	<script>
-		const fbpMainEl = document.querySelector('fbp-node');
-		fbpMainEl.addEventListener('fbp.ready', ({ detail }) => {
-			console.log('ready node fbp event');
+    <script>
+        console.log(document.querySelector('fbp-arena'));
+        debugger;
+        document.querySelector('fbp-arena').addEventListener('fbp.ready', ({ detail }) => {
+            debugger;
+            console.log('ready node fbp event', detail.contextId);
 
-			detail.init(
-				{
-					name: 'demo flow',
-					nodes: {
-						rng: {
-							id: 'rng',
-							type: 'random-number-generator',
-							title: 'Awesome Random number generator',
-							// type: 'code',
-							ui: {
-								position: {
-									top: 45,
-									left: 45
-								}
-							},
-							sockets: [
-								{ id: 'wfr2efwdv', type: 'IN', side: 'top' },
-								{ id: '3ewfvrgw', type: 'OUT', side: 'left' }
-							]
-						},
-						// logr: {
-						//   id: 'logr',
-						//   type: 'logger',
-						//   ui: { position: {
-						//     left: 30,
-						//     top: 30
-						//   }},
-						//   sockets: [{ id: 'wfgfdfg', type: 'IN' }]
-						// },
-						// 'flow-a': {
-						//   id: 'flow-a',
-						//   ui: { position: {
-						//     left: 10,
-						//     top: 10
-						//   }}
-						// }
-					},
-					connections: [
-						// {
-						//   from: 'wfr2efwdv',
-						//   to: 'wfgfdfg'
-						// }
-					]
-				});
-		});
-	</script>
+            detail.init(
+                {
+                    name: 'demo flow',
+                    nodes: [{
+                            id: 'rng',
+                            type: 'random-number-generator',
+                            title: 'Awesome Random number generator',
+                            // type: 'code',
+                            ui: {
+                                position: {
+                                    top: 45,
+                                    left: 45
+                                }
+                            },
+                            sockets: [
+                                { id: 'wfr2efwdv', type: 'IN', side: 'top' },
+                                { id: '3ewfvrgw', type: 'OUT', side: 'left' }
+                            ]
+                        },
+                        // logr: {
+                        //   id: 'logr',
+                        //   type: 'logger',
+                        //   ui: { position: {
+                        //     left: 30,
+                        //     top: 30
+                        //   }},
+                        //   sockets: [{ id: 'wfgfdfg', type: 'IN' }]
+                        // },
+                        // 'flow-a': {
+                        //   id: 'flow-a',
+                        //   ui: { position: {
+                        //     left: 10,
+                        //     top: 10
+                        //   }}
+                        // }
+                    ],
+                    connections: [
+                        // {
+                        //   from: 'wfr2efwdv',
+                        //   to: 'wfgfdfg'
+                        // }
+                    ]
+                });
+        });
+    </script>
 </body>
 
 </html>

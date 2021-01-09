@@ -1,29 +1,35 @@
 import { ElementRef } from '@angular/core';
 
 /* Usage:
-	fbpDispatchEvent('fbp-ready', this.element, {
-		detail: { // anything goes in here!
-			init: (state: IFbpState) => {
-				this.setState(state);
-			}
-		}
-	});
+    fbpDispatchEvent('fbp-ready', this.element, {
+        detail: { // anything goes in here!
+            init: (state: IFbpState) => {
+                this.setState(state);
+            }
+        }
+    });
 */
 export function fbpDispatchEvent(
-	eventName: string,
-	element?: ElementRef,
-	proto: CustomEventInit<any> = {}): CustomEvent {
+    eventName: string,
+    element?: HTMLElement | ElementRef,
+    proto: CustomEventInit<any> = {}): CustomEvent {
+    const el = (element as ElementRef)?.nativeElement || element;
 
-	const completeProto = Object.assign(
-		{ bubbles: true, cancelable: true, view: window, detail: { /* ??? */ } }, proto);
+    const completeProto = Object.assign(
+        { bubbles: true,
+          cancelable: true,
+          view: window,
+          composed: true,
+          target: el,
+          detail: { /* ??? */ } }, proto);
 
-	const event = new CustomEvent(eventName, completeProto);
+    const event = new CustomEvent(eventName, completeProto);
 
-	if (element) {
-		element.nativeElement.dispatchEvent(event);
-	}
+    if (el) {
+        el.dispatchEvent(event);
+    }
 
-	return event;
+    return event;
 }
 
 

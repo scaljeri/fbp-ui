@@ -16,7 +16,7 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { FbpSocketPositions, IFbpNode, IFbpSocket, IFbpState } from '@scaljeri/fbp-core';
+import { FbpNodeId, FbpSocketPositions, IFbpNode, IFbpSocket, IFbpState } from '@scaljeri/fbp-core';
 import { FbpState } from 'src/app/store/state';
 import { NodeManagerService } from 'src/app/services/node-manager.service';
 import { Observable } from 'rxjs';
@@ -31,15 +31,18 @@ import { SocketsManager } from 'src/app/utils/classes/sockets-manager';
 import { interaction2SocketContext } from 'src/app/utils/contexts/interaction2socket-context';
 import { node2SocketContext } from 'src/app/utils/contexts/node2socket-context';
 import { SocketService } from 'src/app/services/socket.service';
-import { IFbpActiveNode, IFbpInnerState } from 'src/app/types/inner-state';
+import { IFbpInnerState } from 'src/app/types/inner-state';
 
 @Component({
     templateUrl: './node.component.html',
     styleUrls: ['./node.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // encapsulation: ViewEncapsulation.ShadowDom,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy, OnChanges {
+    @ViewChild('target', { read: ElementRef }) target!: ElementRef;
+    // @ViewChild('searchbox', { read: ElementRef }) searchEl: ElementRef;
+
     @Input() id = 'ROOT';
     @Select(FbpInnerState) state$!: Observable<IFbpInnerState>;
 
@@ -55,8 +58,8 @@ export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
     @HostBinding('class.fbp-socket-dnd') socketDnD = false;
 
-    @Dispatch() newState = (state: IFbpState) => new New(state);
-    @Dispatch() activate = (config: IFbpActiveNode) => new ActivateNode(config);
+
+    @Dispatch() activate = (id: FbpNodeId) => new ActivateNode(id);
 
 
     // protected dragNode: dragUtils.IDrag;
@@ -118,7 +121,7 @@ export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.id) {
-            this.store.select(FbpState.node(this.id)).subscribe((node: IFbpNode) => {
+            this.store.select(FbpInnerState.getNode(this.id)).subscribe((node: IFbpNode) => {
                 if (node) {
                     this.node = node;
                     setTimeout(() => {
@@ -137,6 +140,7 @@ export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
     cls = '';
 
+
     ngOnInit(): void {
 
         // this.id = this.element.nativeElement.getAttribute('id');
@@ -146,11 +150,11 @@ export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
         // setTimeout(() => {
         this.cls = 'normal';
         this.cdr.detectChanges();
-        fbpDispatchEvent('fbp.ready', this.element, {
-            detail: {
-                init: (state: IFbpState) => this.setState(state)
-            }
-        });
+        // fbpDispatchEvent('fbp.ready', this.element, {
+        //     detail: {
+        //         init: (state: IFbpState) => this.setState(state)
+        //     }
+        // });
 
         // });
         // });
@@ -195,6 +199,9 @@ export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     // }
 
     ngAfterViewInit(): void {
+        // setTimeout(() => {
+        // this.nodeService.initialize(this.target);
+        // }, 1000);
         // this.socketsManager.setInteractionContext(interaction2SocketContext(this.interactionService));
         // setTimeout(() => {
         //   this.id = this.element.nativeElement.getAttribute('id');
@@ -222,17 +229,17 @@ export class NodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
         this.nodeService.removeNode(this.id);
     }
 
-    @HostListener('fbp.ready', ['$event'])
-    ready(event: CustomEvent): void {
-        event.stopPropagation();
-    }
+    // @HostListener('fbp.ready', ['$event'])
+    // ready(event: CustomEvent): void {
+    //     event.stopPropagation();
+    // }
 
     setState(state: IFbpState): void {
         // this.state = state;
 
         this.newState(state);
         this.node = { id: 'root'};
-        this.activate({ id: 'root' });
+        // this.activate({ id: 'root' });
 
         // this.isRootNode = true;
         // setTimeout(() => {

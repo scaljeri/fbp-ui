@@ -2,17 +2,26 @@ import { State, Action, StateContext, Selector, createSelector } from '@ngxs/sto
 
 import { Injectable } from '@angular/core';
 import { New } from './actions/state';
-import { IFbpActiveNode, IFbpInnerState } from '../types/inner-state';
+import { IFbpInnerState } from '../types/inner-state';
 import { ActivateNode } from './actions/add-node-config';
+import { FbpNodeId } from '@scaljeri/fbp-core';
 
 @State<IFbpInnerState>({
     name: 'nodeConfig',
     defaults: {
-        activeNodes: []
+        nodes: {},
+        connections: {},
+        nodeIds: []
     }
 })
 @Injectable()
 export class FbpInnerState {
+    @Selector()
+    static getNode(id: FbpNodeId) {
+        return createSelector([FbpInnerState], (state: IFbpInnerState) => {
+            return state.nodes[id];
+        });
+    }
     // static config(id: string) {
     //     return createSelector([FbpInnerState], (state: IFbpInnerState) => {
     //         return state.nodeChildConfig[id];
@@ -42,11 +51,11 @@ export class FbpInnerState {
     // }
 
     @Action(ActivateNode)
-    activateNode(ctx: StateContext<IFbpInnerState>, { payload }: { payload: IFbpActiveNode }) {
+    activateNode(ctx: StateContext<IFbpInnerState>, { payload }: { payload: FbpNodeId }) {
         // activeNodes
         let state = ctx.getState();
 
-        state = { ...state, activeNodes: [ payload, ...state.activeNodes] };
+        // state = { ...state, activeNodes: [ payload, ...state.activeNodes] };
         // const node = { ...nodes[payload.id], ...{ position: payload.position } };
         // const node = state.nodes[payload.id]; // .find(n => n.id === payload.id);
         // configs[payload.id] = payload

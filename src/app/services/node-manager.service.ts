@@ -1,8 +1,11 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { NodeComponent } from '../components/node/node.component';
 import { Subject } from 'rxjs';
 import { IFbpNodeChildConfig } from '../types/node';
 import { SocketsManager } from '../utils/classes/sockets-manager';
+import { Store } from '@ngxs/store';
+import { fbpDispatchEvent } from '../utils/event';
+import { IFbpState } from '@scaljeri/fbp-core';
 
 export interface INodeServiceItem {
     nodeId: string;
@@ -16,6 +19,7 @@ export interface INodeServiceItem {
     providedIn: 'root'
 })
 export class NodeManagerService {
+    contexts: string[] = [];
     private newNodeSubject = new Subject<INodeServiceItem>();
     public newNode$ = this.newNodeSubject.asObservable;
 
@@ -27,7 +31,29 @@ export class NodeManagerService {
     public test = 1;
     private socketsManagers: Record<string, SocketsManager> = {}
 
-    private _id: string | null = null;
+    constructor(private store: Store) {
+
+    }
+
+    // The parent of nodes determines the context for all those nodes
+    initialize(element: ElementRef): any {
+        const nativEl = element.nativeElement.parentElement;
+        const contextId = nativEl.getAttribute('id') || nativEl.getAttribute('class') || 'root';
+
+        if (this.contexts.indexOf(contextId) === -1) {
+            this.contexts.push(contextId);
+
+            fbpDispatchEvent('fbp.ready', nativEl, {
+                detail: {
+                    contextId,
+                    init: (state: IFbpState) => console.log('toto: received state'), // this.setState(state)
+                }
+            });
+        }
+
+        return null;
+    }
+
 
     get activeNode(): INodeServiceItem {
         return this.nodeMap[0];

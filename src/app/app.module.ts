@@ -18,6 +18,7 @@ import { GearComponent } from './components/gear/gear.component';
 import { SocketComponent } from './components/socket/socket.component';
 import { FbpInnerState } from './store/inner-state';
 import { SocketPipe } from './pipes/socket.pipe';
+import { ArenaComponent } from './components/arena/arena.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { SocketPipe } from './pipes/socket.pipe';
     GearComponent,
     SocketComponent,
     SocketPipe,
+    ArenaComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +52,7 @@ export class AppModule {
   constructor(private injector: Injector) {}
 
   ngDoBootstrap() {
-    // this.createCustomElement(MainComponent, 'main');
+    this.createCustomElement(ArenaComponent, 'arena');
     this.createCustomElement(NodeComponent, 'node');
     this.createCustomElement(SocketsComponent, 'sockets');
     this.createCustomElement(SocketComponent, 'socket');

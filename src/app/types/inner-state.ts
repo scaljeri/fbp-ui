@@ -1,14 +1,7 @@
-import { SocketsManager } from '../utils/classes/sockets-manager';
-
-export interface IFbpActiveNode {
-    id: string;
-}
-
-// export interface IFbpChildNodeConfig {
-//     readonly id: string;
-//     readonly socketService: SocketsManager;
-// }
+import { IFbpNode, FbpNodeId, IFbpConnection, FbpConnectionId } from '@scaljeri/fbp-core';
 
 export interface IFbpInnerState {
-    activeNodes: IFbpActiveNode[];
+    nodes: Record<FbpNodeId, IFbpNode>;                     // Node config objects (copied from IFbpState)
+    connections: Record<FbpConnectionId, IFbpConnection>;   // Connection objects (copied from IFbpState)
+    nodeIds: IFbpNode[];                                    // order of nodes (inited from IFbpState), last interacted node is last element in this list
 }

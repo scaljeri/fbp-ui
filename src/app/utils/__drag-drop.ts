@@ -1,30 +1,30 @@
-import { dndPointerDown } from './dnd/down';
-import { dndPointerMove } from './dnd/move';
-import { IDragAndDropState, IFbpDndSubject, IFbpPointerHandlers } from './dnd/types';
-import { dndPointerUp } from './dnd/up';
+// import { dndPointerDown } from './dnd/down';
+// import { dndPointerMove } from './dnd/move';
+// import { IDragAndDropState, IFbpDndSubject, IFbpPointerHandlers } from './dnd/types';
+// import { dndPointerUp } from './dnd/up';
 
-export function monitorElement(element: HTMLElement, handlers: IFbpPointerHandlers): IFbpDndSubject {
-	let targetEl: HTMLElement;
-	const state: IDragAndDropState[] = [];
+// export function monitorElement(element: HTMLElement, handlers: IFbpPointerHandlers): IFbpDndSubject {
+// 	let targetEl: HTMLElement;
+// 	const state: IDragAndDropState[] = [];
 
-	const pointerDownFn = dndPointerDown(element, handlers, state);
-	const pointerMoveFn = dndPointerMove(handlers, state);
-	const pointerUpFn = dndPointerUp(handlers, state);
+// 	const pointerDownFn = dndPointerDown(element, handlers, state);
+// 	const pointerMoveFn = dndPointerMove(handlers, state);
+// 	const pointerUpFn = dndPointerUp(handlers, state);
 
-	element.addEventListener('pointerdown', pointerDownFn);
-	element.addEventListener('pointermove', pointerMoveFn);
-	element.addEventListener('pointerup', pointerUpFn);
-	element.addEventListener('pointerleave', pointerUpFn);
+// 	element.addEventListener('pointerdown', pointerDownFn);
+// 	element.addEventListener('pointermove', pointerMoveFn);
+// 	element.addEventListener('pointerup', pointerUpFn);
+// 	element.addEventListener('pointerleave', pointerUpFn);
 
-	return {
-		unsubscribe: () => {
-			element.removeEventListener('pointerdown', pointerDownFn);
-			element.removeEventListener('pointermove', pointerMoveFn);
-			element.removeEventListener('pointerup', pointerUpFn);
-			element.removeEventListener('pointerleave', pointerUpFn);
-		}
-	};
-}
+// 	return {
+// 		unsubscribe: () => {
+// 			element.removeEventListener('pointerdown', pointerDownFn);
+// 			element.removeEventListener('pointermove', pointerMoveFn);
+// 			element.removeEventListener('pointerup', pointerUpFn);
+// 			element.removeEventListener('pointerleave', pointerUpFn);
+// 		}
+// 	};
+// }
 
 // export function startDragNode(event: PointerEvent, parent: HTMLElement): IDrag {
 //   // tslint:disable-next-line no-string-literal
