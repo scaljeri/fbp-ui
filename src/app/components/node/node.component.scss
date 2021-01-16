@@ -3,8 +3,6 @@
   // --fbp-gear-color: var(--fbp-gear-color, #fff);
   --fbp-gear-color: #fff;
 
-  display: block;
-
   position: absolute;
 
   min-width: var(--fbp-min-node-width, var(--fbp-default-node-size, 100px));
@@ -13,6 +11,8 @@
   // &.is-document {
   //   position: relative;
   // }
+
+//   display: none;
 
   & > section {
     background-color: var(--fbp-node-bg, #000);
@@ -35,6 +35,11 @@
     // grid-template-rows: 0 minmax(100px, auto) 0;
     // }
   }
+}
+
+:host(.show) {
+    display: flex;
+    flex-direction: column;
 }
 
 :host(.fbp-full-size) {

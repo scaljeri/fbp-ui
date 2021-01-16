@@ -2,8 +2,7 @@ import { State, Action, StateContext, Selector, createSelector } from '@ngxs/sto
 
 import { IFbpNode, IFbpState } from '@scaljeri/fbp-core';
 import { Injectable } from '@angular/core';
-import { New } from './actions/state';
-import { NodeCoordinates, NodeCoordinate } from './actions/node';
+import { NewState } from './actions/state';
 
 @State<IFbpState>({
     name: 'fbp',
@@ -31,10 +30,13 @@ export class FbpState {
     //         return state.nodes![nodeId]; // outNode;
     //     });
     // }
+    @Selector()
+    static get(state: IFbpState) {
+        return state;
+    }
 
-    @Action(New)
+    @Action(NewState)
     newState(ctx: StateContext<IFbpState>, { payload }: { payload: IFbpState }) {
-        console.log('State#newState', payload);
         ctx.setState(payload);
     }
 

@@ -1,11 +1,12 @@
-import { State, Action, StateContext, Selector, createSelector } from '@ngxs/store';
+import { State, Action, StateContext, Selector, createSelector, Store } from '@ngxs/store';
 
 import { Injectable } from '@angular/core';
-import { New } from './actions/state';
 import { IFbpInnerState } from '../types/inner-state';
-import { ActivateNode } from './actions/add-node-config';
-import { FbpNodeId } from '@scaljeri/fbp-core';
+import { FbpNodeId, FbpConnectionId, IFbpConnection, IFbpNode, IFbpState } from '@scaljeri/fbp-core';
+import { ActivateNode, NewInnerState } from './actions/inner-state';
+import { FbpState } from './state';
 
+let x: any;
 @State<IFbpInnerState>({
     name: 'nodeConfig',
     defaults: {
@@ -16,7 +17,8 @@ import { FbpNodeId } from '@scaljeri/fbp-core';
 })
 @Injectable()
 export class FbpInnerState {
-    @Selector()
+    constructor(private store: Store) {}
+
     static getNode(id: FbpNodeId) {
         return createSelector([FbpInnerState], (state: IFbpInnerState) => {
             return state.nodes[id];
@@ -34,21 +36,29 @@ export class FbpInnerState {
     //     return state.nodeChildConfig;
     // }
 
-    // // @Selector([FbpState.nodes])
-    // static nodexx(nodeId: string) {
-    //     return createSelector([FbpInnerState], (state: IFbpInnerState) => {
-    //         // const outNode = state.nodes.filter(node => node.id === nodeId)[0];
-    //         // console.log('State#getNode#createSelector', nodeId, outNode, state);
-    //         console.log('OKOKOKOKOKO', state.nodeChildConfig[nodeId]);
-    //         return state.nodeChildConfig[nodeId]; // outNode;
-    //     });
-    // }
 
     // @Action(New)
     // newState(ctx: StateContext<FbpInnerState>, { payload }: { payload: FbpInnerState }) {
     //     console.log('State#newState', payload);
     //     ctx.setState(payload);
     // }
+
+    @Action(NewInnerState)
+    newState(ctx: StateContext<IFbpInnerState>) {
+        const state: IFbpState = this.store.selectSnapshot(FbpState.get);
+
+        console.log('set new state');
+
+        ctx.setState({
+            ...(state.nodes!.reduce((out, node) => {
+                out.nodeIds.push(node.id!);
+                out.nodes[node.id!] = node;
+                return out;
+            }, { nodeIds: [] as FbpNodeId[], nodes: {} as Record<FbpNodeId, IFbpNode>})),
+            connections: (state.connections || []).reduce((out, conn) =>
+                (out[conn.id!] = conn, out), {} as Record<FbpConnectionId, IFbpConnection>)
+        });
+    }
 
     @Action(ActivateNode)
     activateNode(ctx: StateContext<IFbpInnerState>, { payload }: { payload: FbpNodeId }) {

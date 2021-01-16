@@ -48,13 +48,13 @@
 <body>
     <main>
         <fbp-arena>
-            <fbp-node class="drag-socket" id="rng">
+            <!-- <fbp-node class="drag-socket" id="rng">
                 <fbp-header fbp-view="header"></fbp-header>
                 <fbp-random-number-generator fbp-view="normal"></fbp-random-number-generator>
                 <fbp-gear fbp-view="small"></fbp-gear>
-            </fbp-node>
+            </fbp-node> -->
 
-            <!-- <fbp-logger id="logr"></fbp-logger> -->
+            <fbp-logger id="logr"></fbp-logger>
         </fbp-arena>
 
         <!-- <fbp-arena>
@@ -72,55 +72,55 @@
     <fbp-node id="flow-a"></fbp-node> -->
 
     <script>
+        const data = {
+            name: 'demo flow',
+            nodes: [{
+                id: 'rng',
+                type: 'random-number-generator',
+                title: 'Awesome Random number generator',
+                // type: 'code',
+                ui: {
+                    position: {
+                        top: 45,
+                        left: 45
+                    }
+                },
+                sockets: [
+                    { id: 'wfr2efwdv', type: 'IN', side: 'top' },
+                    { id: '3ewfvrgw', type: 'OUT', side: 'left' }
+                ]
+            },
+                // logr: {
+                //   id: 'logr',
+                //   type: 'logger',
+                //   ui: { position: {
+                //     left: 30,
+                //     top: 30
+                //   }},
+                //   sockets: [{ id: 'wfgfdfg', type: 'IN' }]
+                // },
+                // 'flow-a': {
+                //   id: 'flow-a',
+                //   ui: { position: {
+                //     left: 10,
+                //     top: 10
+                //   }}
+                // }
+            ],
+            connections: [
+                // {
+                //   from: 'wfr2efwdv',
+                //   to: 'wfgfdfg'
+                // }
+            ]
+        };
         console.log(document.querySelector('fbp-arena'));
-        debugger;
-        document.querySelector('fbp-arena').addEventListener('fbp.ready', ({ detail }) => {
-            debugger;
+        const arena = document.querySelector('fbp-arena');
+        arena.addEventListener('fbp.ready', function ({ detail }) {
             console.log('ready node fbp event', detail.contextId);
 
-            detail.init(
-                {
-                    name: 'demo flow',
-                    nodes: [{
-                            id: 'rng',
-                            type: 'random-number-generator',
-                            title: 'Awesome Random number generator',
-                            // type: 'code',
-                            ui: {
-                                position: {
-                                    top: 45,
-                                    left: 45
-                                }
-                            },
-                            sockets: [
-                                { id: 'wfr2efwdv', type: 'IN', side: 'top' },
-                                { id: '3ewfvrgw', type: 'OUT', side: 'left' }
-                            ]
-                        },
-                        // logr: {
-                        //   id: 'logr',
-                        //   type: 'logger',
-                        //   ui: { position: {
-                        //     left: 30,
-                        //     top: 30
-                        //   }},
-                        //   sockets: [{ id: 'wfgfdfg', type: 'IN' }]
-                        // },
-                        // 'flow-a': {
-                        //   id: 'flow-a',
-                        //   ui: { position: {
-                        //     left: 10,
-                        //     top: 10
-                        //   }}
-                        // }
-                    ],
-                    connections: [
-                        // {
-                        //   from: 'wfr2efwdv',
-                        //   to: 'wfgfdfg'
-                        // }
-                    ]
-                });
+            // detail.init(data);
+            this.setState(data);
         });
     </script>
 </body>

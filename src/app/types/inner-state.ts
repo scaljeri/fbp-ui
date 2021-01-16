@@ -3,5 +3,5 @@ import { IFbpNode, FbpNodeId, IFbpConnection, FbpConnectionId } from '@scaljeri/
 export interface IFbpInnerState {
     nodes: Record<FbpNodeId, IFbpNode>;                     // Node config objects (copied from IFbpState)
     connections: Record<FbpConnectionId, IFbpConnection>;   // Connection objects (copied from IFbpState)
-    nodeIds: IFbpNode[];                                    // order of nodes (inited from IFbpState), last interacted node is last element in this list
+    nodeIds: FbpNodeId[];                                    // order of nodes (inited from IFbpState), last interacted node is last element in this list
 }
